@@ -24,4 +24,3 @@ urlpatterns = [
     path('single-product.html', views.view_single_product),
     path('shop-left-sidebar.html', views.view_shop_catalog)
 ]
-
