@@ -1,5 +1,9 @@
-# Byte-compiled / optimized / DLL files
+# Byte-compeled / optimized / DLL files
 __pycache__/
+
+phoneStore/phoneStore/__init__.py
+phoneStore/main/migrations/__init__.py
+
 *.py[cod]
 *$py.class
 
