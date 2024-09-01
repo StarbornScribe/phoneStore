@@ -21,6 +21,6 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.bootstrap_page_handler),
-    path('single/', views.view_single_product)
+    path('single-product.html', views.view_single_product),
+    path('shop-left-sidebar.html', views.view_shop_catalog)
 ]
-

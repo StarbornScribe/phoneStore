@@ -10,7 +10,7 @@ def bootstrap_page_handler(request):
 def view_single_product(request):
     return render(request, 'single-product.html')
 
-
+  
 def home_page_view(request):
     product_instances: QuerySet = ProductInstance.objects.all()
     properties: List = [product_instance.name for product_instance in product_instances]
@@ -22,3 +22,7 @@ def home_page_view(request):
     }
 
     return render(request,, context)
+
+  
+def view_shop_catalog(request):
+    return render(request, 'single-catalog.html')
