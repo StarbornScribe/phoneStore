@@ -9,3 +9,7 @@ def bootstrap_page_handler(request):
 
 def view_single_product(request):
     return render(request, 'single-product.html')
+
+
+def view_shop_catalog(request):
+    return render(request, 'single-catalog.html')
