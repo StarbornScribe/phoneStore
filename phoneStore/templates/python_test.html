@@ -1,0 +1,16 @@
+{% extends 'shop-left-sidebar.html' %}
+{% block content %}
+<div>
+    <ul>
+        {% if image_instances %}
+            {% for im in image_instances %}
+                <li>
+                    <img src="{{ im.image.url }}" alt="Image for {{ im.image_instance_id.name }}">
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No images available.</li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

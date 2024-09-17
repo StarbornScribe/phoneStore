@@ -1,0 +1,149 @@
+{% load static %}
+
+<title>Test</title>
+{% block content %}
+    <p>
+    {% for el in product_instances %}
+        {% if el.product_type_id.name == 'phones' %}
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
+            <!-- Single Product -->
+            <div class="product">
+                <span class="badges">
+                    {% if el.discount %}
+                        <span class="sale">-{{ el.discount }}%</span>
+                    {% endif %}
+                    {% if el.is_new %}
+                        <span class="new">New</span>
+                    {% endif %}
+                </span>
+                <div class="thumb">
+                    <a href="single-product.html" class="image">
+                        <img src="{{ el.image.url }}" alt="{{ el.name }}">
+                        <img class="hover-image" src="{{ el.image.url }}" alt="{{ el.name }}">
+                    </a>
+                </div>
+                <div class="content">
+                    <span class="category"><a href="#">Accessories</a></span>
+                    <h5 class="title">
+                        <a href="single-product.html">{{ el.name }}</a>
+                    </h5>
+                    <span class="price">
+                        {% for property in el.propertyinstance_set.all %}
+                            {% if property.property_type_id.name == 'Цена' %}
+                                <span class="old">${{ property.old_price }}</span>
+                                <span class="new">${{ property.value }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="actions">
+                    <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart">
+                        <i class="pe-7s-shopbag"></i>
+                    </button>
+                    <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist">
+                        <i class="pe-7s-like"></i>
+                    </button>
+                    <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="pe-7s-look"></i>
+                    </button>
+                    <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare">
+                        <i class="pe-7s-refresh-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    </p>
+{% endblock %}
+
+
+
+<!-- {% for property in el.propertyinstance_set.all %}-->
+<!--                {{ property.property_type_id.name }} : {{ property.value }} &lt;!&ndash; Display property name and value &ndash;&gt;-->
+<!--            {% empty %}-->
+<!--                No properties available.-->
+<!--            {% endfor %}-->
+
+
+<!--<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">-->
+<!--                                                    &lt;!&ndash; Single Prodect &ndash;&gt;-->
+<!--                                                    <div class="product">-->
+<!--                                                        <span class="badges">-->
+<!--                                                        <span class="sale">-10%</span>-->
+<!--                                                        <span class="new">New</span>-->
+<!--                                                        </span>-->
+<!--                                                        <div class="thumb">-->
+<!--                                                            <a href="single-product.html" class="image">-->
+<!--                                                                <img src="assets/images/product-image/2.webp" alt="Product">-->
+<!--                                                                <img class="hover-image" src="assets/images/product-image/2.webp" alt="Product">-->
+<!--                                                            </a>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="content">-->
+<!--                                                            <span class="category"><a href="#">Accessories</a></span>-->
+<!--                                                            <h5 class="title"><a href="single-product.html">Bluetooth Headphone-->
+<!--                                                                </a>-->
+<!--                                                            </h5>-->
+<!--                                                            <span class="price">-->
+<!--                                                            <span class="old">$48.50</span>-->
+<!--                                                            <span class="new">$38.50</span>-->
+<!--                                                            </span>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="actions">-->
+<!--                                                            <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart"><i class="pe-7s-shopbag"></i></button>-->
+<!--                                                            <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist"><i class="pe-7s-like"></i></button>-->
+<!--                                                            <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="pe-7s-look"></i></button>-->
+<!--                                                            <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare"><i class="pe-7s-refresh-2"></i></button>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+
+
+
+                                                    {% block content %}
+                                                    {% for el in product_instances %}
+                                                        {% if el.product_type_id.name == 'phones' %}
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
+                                                            <!-- Single Product -->
+                                                            <div class="product">
+                                                                <span class="badges"> 10% </span>
+                                                                <div class="thumb">
+                                                                    <a href="single-product.html" class="image">
+                                                                        <img src="" alt="">
+                                                                        <img class="hover-image" src="" alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="content">
+                                                                    <span class="category"><a href="#">Accessories</a></span>
+                                                                    <h5 class="title">
+                                                                        <a href="single-product.html">{{ el.name }}</a>
+                                                                    </h5>
+                                                                    <span class="price">
+                                                                        {% for property in el.propertyinstance_set.all %}
+                                                                            {% if property.property_type_id.name == 'Цена' %}
+                                                                                <span class="old">${{ property.old_price }}</span>
+                                                                                <span class="new">${{ property.value }}</span>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </span>
+                                                                </div>
+                                                                <div class="actions">
+                                                                    <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart">
+                                                                        <i class="pe-7s-shopbag"></i>
+                                                                    </button>
+                                                                    <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist">
+                                                                        <i class="pe-7s-like"></i>
+                                                                    </button>
+                                                                    <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                                        <i class="pe-7s-look"></i>
+                                                                    </button>
+                                                                    <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare">
+                                                                        <i class="pe-7s-refresh-2"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endblock %}
