@@ -26,7 +26,6 @@ def view_single_product(request, pk):
     return render(request, 'single-product-slider.html', context)
 
 
-
 class PhoneDetailView(DetailView):
     model = PropertyInstance
     template_name = 'single-product-slider.html'
@@ -37,8 +36,6 @@ class PhoneDetailView(DetailView):
         slug = self.kwargs.get('slug')
         return ProductInstance.objects.get(slug=slug)
 
-
-
   
 def phones_catalog(request):
     # logger.info("View accessed")
@@ -47,8 +44,6 @@ def phones_catalog(request):
     # Retrieve all product instances
     product_instances = ProductInstance.objects.filter(product_type_id__name='phones').prefetch_related(
         'propertyinstance_set__property_type_id')
-
-
 
     # product_instances: ProductInstance = ProductInstance.objects.all().prefetch_related('propertyinstance_set__property_type_id')
     image_instances: ImagesInstance = ImagesInstance.objects.all()
