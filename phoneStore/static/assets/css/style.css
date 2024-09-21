@@ -4703,6 +4703,35 @@ body.offcanvas-open {
   right: 168px;
   bottom: 28px;
 }
+.enlarged-image {
+    width: 1500%; /* Adjust as needed */
+    max-width: 1920px; /* Set the maximum width */
+    height: auto; /* Keeps the aspect ratio */
+}
+.image-container {
+    display: flex; /* Flexbox layout to help with centering */
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    width: 100%; /* Container takes full width */
+    max-width: 800px; /* Optional: set max width for the container */
+    height: 400px; /* Set a specific height for the container */
+    background-color: #f0f0f0; /* Optional: background color for the container */
+    overflow: hidden; /* Hide any overflow from the image */
+    border: 1px solid #ddd; /* Optional: border for the container */
+    position: left; /* Position relative for inner positioning */
+}
+.responsive-image {
+    max-width: 100%; /* Image will shrink to fit within the container */
+    max-height: 100%; /* Ensures the image does not exceed the container height */
+    height: auto; /* Keeps the aspect ratio */
+    object-fit: contain; /* Fits the image within the container without cropping */
+    position: left; /* Positioning inside the container */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjusts the image back to the center */
+}
+
+
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .deal-image {
     right: 100px;

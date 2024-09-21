@@ -17,10 +17,17 @@ Including another URLconf
 from main import views
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.bootstrap_page_handler),
-    path('single-product.html', views.view_single_product),
-    path('shop-left-sidebar.html', views.view_shop_catalog)
+    path('admin/', admin.site.urls, name='admin'),
+    path('', views.bootstrap_page_handler, name='bootstrap_page'),
+    path('product/<slug:slug>/', views.PhoneDetailView.as_view(), name='phone-detail'),
+    path('phones-catalog/', views.phones_catalog, name='phones_catalog')
 ]
+if settings.DEBUG:
+    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # Serving media files (user uploads)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
