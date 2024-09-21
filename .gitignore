@@ -6,6 +6,7 @@ phoneStore/main/migrations/__init__.py
 
 *.py[cod]
 *$py.class
+.idea/
 
 # C extensions
 *.so
