@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance
-from typing import List
+from typing import List, Any, Dict
 from django.db.models import QuerySet
 # import logging
 # logger = logging.getLogger(__name__)
@@ -27,14 +27,22 @@ def view_single_product(request, pk):
 
 
 class PhoneDetailView(DetailView):
-    model = PropertyInstance
+    model = ProductInstance
     template_name = 'single-product-slider.html'
-    context_object_name = 'phone'
 
-    def get_object(self, queryset=None):
-        # Fetch the object based on the slug
-        slug = self.kwargs.get('slug')
-        return ProductInstance.objects.get(slug=slug)
+    def get_context_data(self, *args, **kwargs):
+        slug_name: str = self.kwargs['slug']
+        context = super(PhoneDetailView, self).get_context_data(*args, **kwargs)
+        context['object_property'] = PropertyInstance.objects.filter(product_instance_id__slug=slug_name)
+        context['image'] = ImagesInstance.objects.filter(image_instance_id__slug=slug_name)
+
+        return context
+
+    # def get_object(self, queryset=None):
+    #     # Fetch the object based on the slug
+    #     slug = self.kwargs.get('slug')
+    #
+    #     return PropertyInstance
 
   
 def phones_catalog(request):

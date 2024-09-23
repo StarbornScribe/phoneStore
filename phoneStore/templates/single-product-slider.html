@@ -528,20 +528,21 @@
                     {% endif %}
                 </div>
                 <div class="row">
-
-
                     <div class="col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
                         <div class="product-details-content quickview-content">
-                                <pre>{{ phone }}</pre>
-                                <p>{{ phone.product_instance_id }}</p>
-                                <p>{{ phone.property_type_id }}</p>
-                                <p>{{ phone.value }}</p>
-                                <p>{{ phone.image_instance_id }}</p>
+                            {% for property in object_property %}
+                                <pre>{{ property }}</pre>
+                            {% endfor %}
 
-
-
-
-                                <h2>{{ phone.product_instance_id.name }}</h2>
+                            {% for i in image %}
+                                <img src="{{ i.image.url }}" alt="Image for sd">
+                            {% endfor %}
+<!--                                <p>{{ object.product_instance_id }}</p>-->
+<!--                                <p> TEST </p>-->
+<!--                                <p>{{ phone.property_type_id }}</p>-->
+<!--                                <p>{{ phone.value }}</p>-->
+<!--                                <p>{{ phone.image_instance_id }}</p>-->
+<!--                                <h2>{{ phone.product_instance_id.name }}</h2>-->
 
                             <div class="pricing-meta">
                                 {% if phone.property_type_id.name == 'Цена' %}

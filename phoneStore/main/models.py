@@ -3,8 +3,6 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 
-
-
 class ProductType(models.Model):
     # Данный класс описывает тип продукта (телефон, планшет и т.д)
     name = models.CharField(max_length=50)
@@ -45,12 +43,8 @@ class ImagesInstance(models.Model):
     image_instance_id = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/')
 
-
     def __str__(self):
         return f"Image for {self.image_instance_id.name}"
-
-
-
 
 
 class PropertyInstance(models.Model):
@@ -58,7 +52,7 @@ class PropertyInstance(models.Model):
     product_instance_id = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
     property_type_id = models.ForeignKey(PropertyType, on_delete=models.CASCADE)
     value = models.CharField(max_length=100)
-    image_instance_id = models.ForeignKey(ImagesInstance, on_delete=models.CASCADE, null=True, blank=True)
+    # image_instance_id = models.ForeignKey(ImagesInstance, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f'{self.property_type_id.name}: {self.value}'
