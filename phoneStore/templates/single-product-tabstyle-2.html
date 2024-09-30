@@ -316,7 +316,11 @@
             </div>
         </div>
         <!-- OffCanvas Wishlist End -->
+        <!-- ======================-->
+
+        <!-- ======================-->
         <!-- OffCanvas Cart Start -->
+        <!-- ======================-->
         <div id="offcanvas-cart" class="offcanvas offcanvas-cart">
             <div class="inner">
                 <div class="head">
@@ -360,7 +364,11 @@
             </div>
         </div>
         <!-- OffCanvas Cart End -->
+        <!-- ======================-->
+
+        <!-- ======================-->
         <!-- OffCanvas Menu Start -->
+        <!-- ======================-->
         <div id="offcanvas-mobile-menu" class="offcanvas offcanvas-mobile-menu">
             <button class="offcanvas-close"></button>
             <div class="user-panel">
@@ -477,6 +485,9 @@
                     </ul>
                 </div>
                 <!-- OffCanvas Menu End -->
+                <!-- ======================-->
+
+
                 <div class="offcanvas-social mt-auto">
                     <ul>
                         <li>
@@ -499,24 +510,36 @@
             </div>
         </div>
         <!-- OffCanvas Menu End -->
+        <!-- ======================-->
+
+        <!-- ======================-->
         <!-- breadcrumb-area start -->
+        <!-- ======================-->
         <div class="breadcrumb-area">
             <div class="container">
                 <div class="row align-items-center justify-content-center">
                     <div class="col-12 text-center">
                         <h2 class="breadcrumb-title">Single Product</h2>
+                        <!-- ======================-->
                         <!-- breadcrumb-list start -->
+                        <!-- ======================-->
                         <ul class="breadcrumb-list">
                             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                             <li class="breadcrumb-item active">Product</li>
                         </ul>
                         <!-- breadcrumb-list end -->
+                        <!-- ======================-->
+
                     </div>
                 </div>
             </div>
         </div>
         <!-- breadcrumb-area end -->
+        <!-- ======================-->
+
+        <!-- ======================-->
         <!-- Product Details Area Start -->
+        <!-- ======================-->
         {% block content %}
 
         <div class="product-details-area pt-100px pb-100px">
@@ -526,20 +549,23 @@
                         <div class="product-details-img product-details-tab product-details-tab-2 d-flex">
                             <div class="swiper-container mr-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">
                                 <div class="swiper-wrapper">
+<!--                                    {% for image in object_image %}-->
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/1.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/1.webp' %}" alt="">-->
+                                    </div>
+<!--                                    {% endfor %}-->
+                                    <div class="swiper-slide">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/2.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/2.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/3.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/3.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/4.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/4.webp" alt="">
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/5.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/5.webp' %}" alt="">
                                     </div>
                                 </div>
                                 <!-- Add Arrows -->
@@ -551,257 +577,141 @@
                             <!-- Swiper -->
                             <div class="swiper-container zoom-top-2 align-self-start">
                                 <div class="swiper-wrapper">
+                                    {% for image in object_image %}
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/1.webp" alt="">
-                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/1.webp">
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/1.webp' %}" alt="">-->
+                                        <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
+                                        <a class="venobox full-preview" data-gall="myGallery" href="{{ image.image.url }}">
                                             <i class="fa fa-arrows-alt" aria-hidden="true"></i>
                                         </a>
                                     </div>
-                                    <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/2.webp" alt="">
-                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/2.webp">
-                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/3.webp" alt="">
-                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/3.webp">
-                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/4.webp" alt="">
-                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/4.webp">
-                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/5.webp" alt="">
-                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/5.webp">
-                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
+                                    {% endfor %}
+<!--                                    <div class="swiper-slide">-->
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/2.webp' %}" alt="">-->
+<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/2.webp">-->
+<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                    <div class="swiper-slide">-->
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/3.webp' %}" alt="">-->
+<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/3.webp">-->
+<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                    <div class="swiper-slide">-->
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/4.webp' %}" alt="">-->
+<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/4.webp">-->
+<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                    <div class="swiper-slide">-->
+<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/5.webp' %}" alt="">-->
+<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/5.webp">-->
+<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
                         <div class="product-details-content quickview-content ml-25px">
-                            <h1>{{ object_name.name }}</h1>>
-                        {% for property in object_property %}
-                             <h2>{{ property }}</h2>
-                        {% endfor %}
-
-<!--                            <h2>Modern Smart Phone</h2>-->
+                            <h1>{{ object_name.name }}</h1>
                             <div class="pricing-meta">
                                 <ul class="d-flex">
-                                    <li class="new-price">$20.90</li>
+                                    <li class="new-price">{{object_price}}</li>
                                 </ul>
                             </div>
-                            <div class="pro-details-rating-wrap">
-                                <div class="rating-product">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <span class="read-review"><a class="reviews" href="#">(5 Customer Review)</a></span>
-                            </div>
-                            <p class="mt-30px">Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do eiusmll tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mill veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip exet commodo consequat. Duis aute irure dolor</p>
-                            <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-                                <span>SKU:</span>
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">Ch-256xl</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-                                <span>Categories: </span>
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">Smart Device, </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">ETC</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-                                <span>Tags: </span>
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">Smart Device, </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Phone</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="pro-details-quality">
-                                <div class="cart-plus-minus">
-                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
-                                </div>
-                                <div class="pro-details-cart">
-                                    <button class="add-cart"> Add To
-                                        Cart</button>
-                                </div>
-                                <div class="pro-details-compare-wishlist pro-details-wishlist ">
-                                    <a href="wishlist.html"><i class="pe-7s-like"></i></a>
-                                </div>
-                                <div class="pro-details-compare-wishlist pro-details-wishlist ">
-                                    <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
-                                </div>
-                            </div>
+
+<!--                            Кнопки добавления в корзину-->
+
+<!--                            <div class="pro-details-quality">-->
+<!--                                <div class="cart-plus-minus">-->
+<!--                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />-->
+<!--                                </div>-->
+<!--                                <div class="pro-details-cart">-->
+<!--                                    <button class="add-cart"> Add To-->
+<!--                                        Cart</button>-->
+<!--                                </div>-->
+<!--                                <div class="pro-details-compare-wishlist pro-details-wishlist ">-->
+<!--                                    <a href="wishlist.html"><i class="pe-7s-like"></i></a>-->
+<!--                                </div>-->
+<!--                                <div class="pro-details-compare-wishlist pro-details-wishlist ">-->
+<!--                                    <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
+
+                        <!--========================================-->
                         <!-- product details description area start -->
+                        <!--========================================-->
                         <div class="description-review-wrapper">
-                            <div class="description-review-topbar nav">
-                                <button data-bs-toggle="tab" data-bs-target="#des-details2">Information</button>
-                                <button class="active" data-bs-toggle="tab" data-bs-target="#des-details1">Description</button>
-                                <button data-bs-toggle="tab" data-bs-target="#des-details3">Reviews (02)</button>
-                            </div>
-                            <div class="tab-content description-review-bottom">
-                                <div id="des-details2" class="tab-pane">
-                                    <div class="product-anotherinfo-wrapper text-start">
-                                        <ul>
-                                            <li><span>Weight</span> 400 g</li>
-                                            <li><span>Dimensions</span>10 x 10 x 15 cm</li>
-                                            <li><span>Materials</span> 60% cotton, 40% polyester</li>
-                                            <li><span>Other Info</span> American heirloom jean shorts pug seitan letterpress</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div id="des-details1" class="tab-pane active">
-                                    <div class="product-description-wrapper">
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eius tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip efgx ea co consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occae cupidatat non proident, sunt in culpa qui
-                                        </p>
-                                    </div>
-                                </div>
-                                <div id="des-details3" class="tab-pane">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="review-wrapper">
-                                                <div class="single-review">
-                                                    <div class="review-img">
-                                                        <img src="assets/images/review-image/1.png" alt="" />
-                                                    </div>
-                                                    <div class="review-content">
-                                                        <div class="review-top-wrap">
-                                                            <div class="review-left">
-                                                                <div class="review-name">
-                                                                    <h4>White Lewis</h4>
-                                                                </div>
-                                                                <div class="rating-product">
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                </div>
-                                                            </div>
-                                                            <div class="review-left">
-                                                                <a href="#">Reply</a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="review-bottom">
-                                                            <p>
-                                                                Vestibulum ante ipsum primis aucibus orci luctustrices posuere
-                                                                cubilia Curae Suspendisse viverra ed viverra. Mauris ullarper
-                                                                euismod vehicula. Phasellus quam nisi, congue id nulla.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="single-review child-review">
-                                                    <div class="review-img">
-                                                        <img src="assets/images/review-image/2.png" alt="" />
-                                                    </div>
-                                                    <div class="review-content">
-                                                        <div class="review-top-wrap">
-                                                            <div class="review-left">
-                                                                <div class="review-name">
-                                                                    <h4>White Lewis</h4>
-                                                                </div>
-                                                                <div class="rating-product">
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                </div>
-                                                            </div>
-                                                            <div class="review-left">
-                                                                <a href="#">Reply</a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="review-bottom">
-                                                            <p>Vestibulum ante ipsum primis aucibus orci luctustrices posuere
-                                                                cubilia Curae Sus pen disse viverra ed viverra. Mauris ullarper
-                                                                euismod vehicula.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <div class="ratting-form-wrapper pl-50">
-                                                <h3>Add a Review</h3>
-                                                <div class="ratting-form">
-                                                    <form action="#">
-                                                        <div class="star-box">
-                                                            <span>Your rating:</span>
-                                                            <div class="rating-product">
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="rating-form-style">
-                                                                    <input placeholder="Name" type="text" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="rating-form-style">
-                                                                    <input placeholder="Email" type="email" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <div class="rating-form-style form-submit">
-                                                                    <textarea name="Your Review" placeholder="Message"></textarea>
-                                                                    <button class="btn btn-primary btn-hover-color-primary " type="submit" value="Submit">Submit</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div id="des-details2" class="tab-pane">
+                                <div class="product-anotherinfo-wrapper text-start">
+                                    <table>
+                                        <tr>
+                                            <td><span>Диагональ экрана (дюйм): </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Разрешение экрана (Пикс/дюйм): </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Встроенная память: </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Процессор: </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Фотокамера (МПикс): </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Цвет: </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>Операционная система: </span></td>
+                                            <td>1</td>
+                                        </tr>
+                                    </table>
+<!--                                    <ul>-->
+<!--                                        <li><span>Диагональ экрана (дюйм): </span> <span>1</span></li>-->
+<!--                                        <li><span>Разрешение экрана (Пикс/дюйм): </span> </li>-->
+<!--                                        <li><span>Встроенная память: </span></li>-->
+<!--                                        <li><span>Процессор: </span> </li>-->
+<!--                                        <li><span>Фотокамера (МПикс): </span> </li>-->
+<!--                                        <li><span>Цвет: </span> </li>-->
+<!--                                        <li><span>Операционная система: </span> </li>-->
+<!--                                    </ul>-->
                                 </div>
                             </div>
                         </div>
+
                         <!-- product details description area end -->
+                        <!--========================================-->
+
                     </div>
                 </div>
             </div>
         </div>
+
         {% endblock %}
+
+        <!-- ======================-->
         <!-- Product Area Start -->
+        <!-- ======================-->
+
         <div class="product-area related-product">
             <div class="container">
                 <!-- Section Title & Tab Start -->
                 <div class="row">
                     <div class="col-12">
                         <div class="section-title text-center m-0">
-                            <h2 class="title">Related Products</h2>
-                            <p>There are many variations of passages of Lorem Ipsum available</p>
+                            <h2 class="title">Сопутствующие товары</h2>
                         </div>
                     </div>
                 </div>
@@ -1203,38 +1113,38 @@
                             <div class="swiper-container gallery-top">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/1.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/1.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/2.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/2.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/3.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/3.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/4.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/4.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/zoom-image/5.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/5.webp' %}" alt="">
                                     </div>
                                 </div>
                             </div>
                             <div class="swiper-container gallery-thumbs mt-20px slider-nav-style-1 small-nav">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/1.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/1.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/2.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/2.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/3.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/3.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/4.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/4.webp' %}" alt="">
                                     </div>
                                     <div class="swiper-slide">
-                                        <img class="img-responsive m-auto" src="assets/images/product-image/small-image/5.webp" alt="">
+                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/5.webp' %}" alt="">
                                     </div>
                                 </div>
                                 <!-- Add Arrows -->
@@ -1376,16 +1286,16 @@
     <!-- Global Vendor, plugins JS -->
     <!-- JS Files
     ============================================ -->
-    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/vendor/jquery-migrate-3.3.2.min.js"></script>
-    <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
-    <script src="assets/js/plugins/jquery.countdown.min.js"></script>
-    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
-    <script src="assets/js/plugins/scrollUp.js"></script>
-    <script src="assets/js/plugins/venobox.min.js"></script>
-    <script src="assets/js/plugins/jquery-ui.min.js"></script>
-    <script src="assets/js/plugins/mailchimp-ajax.js"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery-migrate-3.3.2.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/modernizr-3.11.2.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/scrollUp.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/venobox.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/mailchimp-ajax.js' %}"></script>
 
     <!-- Minify Version -->
     <!-- <script src="assets/js/vendor.min.js"></script>
@@ -1393,7 +1303,7 @@
     <script src="assets/js/main.min.js"></script> -->
 
     <!--Main JS (Common Activation Codes)-->
-    <script src="assets/js/main.js"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
 </body>
 
 </html>

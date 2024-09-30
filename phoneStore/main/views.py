@@ -1,15 +1,11 @@
-from django.shortcuts import render
-from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance
+from django.http import Http404
 from typing import List, Any, Dict
+from django.shortcuts import render
 from django.db.models import QuerySet
-# import logging
-# logger = logging.getLogger(__name__)
-# import pdb; pdb.set_trace()
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
-from django.http import Http404
 
-# Create your views here.
+from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance
 
 
 def bootstrap_page_handler(request):
@@ -44,8 +40,9 @@ class PhoneDetailView(DetailView):
         context = super(PhoneDetailView, self).get_context_data(*args, **kwargs)
 
         context['object_name'] = ProductInstance.objects.get(slug=slug_name)
+        context['object_price'] = PropertyInstance.objects.get(property_type_id__name='Цена')
+        context['object_image'] = ImagesInstance.objects.filter(image_instance_id__slug=slug_name)
         context['object_property'] = PropertyInstance.objects.filter(product_instance_id__slug=slug_name)
-        context['image'] = ImagesInstance.objects.filter(image_instance_id__slug=slug_name)
 
         return context
 
