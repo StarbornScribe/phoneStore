@@ -27,6 +27,7 @@ urlpatterns = [
     path('product/<slug:slug>/', views.PhoneDetailView.as_view(), name='phone-detail'),
     path('phones-catalog/', views.phones_catalog, name='phones_catalog')
 ]
+
 if settings.DEBUG:
     # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     # Serving media files (user uploads)
