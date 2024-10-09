@@ -639,10 +639,9 @@
                                                                 <span class="badges">10%</span>
                                                                 <div class="thumb">
                                                                     <a href="{{ el.get_absolute_url }}" class="image">
-                                                                         {% for im in el.imagesinstance_set.all %}
-                                                                            <img src="{{ im.image.url }}" alt="Image for {{ el.product_type_id.name }}">
-                                                                                {% endfor %}
-
+                                                                        {% for im in el.imagesinstance_set.all %}
+                                                                        <img src="{{ im.image.url }}" alt="Image for {{ el.product_type_id.name }}">
+                                                                        {% endfor %}
                                                                     </a>
                                                                 </div>
                                                                 <div class="content">
