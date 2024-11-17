@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', views.bootstrap_page_handler, name='bootstrap_page'),
     path('product/<slug:slug>/', views.PhoneDetailView.as_view(), name='phone-detail'),
-    path('phones-catalog/', views.phones_catalog, name='phones_catalog')
+    path('phones-catalog/', views.phones_catalog, name='phones_catalog'),
 ]
 
 if settings.DEBUG:

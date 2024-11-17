@@ -32,7 +32,6 @@ def view_single_product_alternative(request, pk):
 
 class PhoneDetailView(DetailView):
     model = ProductInstance
-    # template_name = 'single-product-slider.html'
     template_name = 'single-product-tabstyle-2.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -71,7 +70,7 @@ def phones_catalog(request):
         'image_instances': image_instances,
     }
 
-    return render(request, 'shop-left-sidebar.html', context)
+    return render(request, 'catalog.html', context)
 
   
 def view_shop_catalog(request):
