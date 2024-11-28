@@ -57,8 +57,23 @@ class PropertyInstance(models.Model):
     # image_instance_id = models.ForeignKey(ImagesInstance, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.property_type_id.name}: {self.value}'
+        return f"{self.property_type_id.name}: {self.value} ({self.product_instance_id.name})"
 
+# ---------
+# Склад
+# ---------
+class Stock(models.Model):
+    product_instance = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
+    property_instances = models.ManyToManyField(PropertyInstance, blank=True)
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        properties = ", ".join([f"{prop.property_type_id.name}: {prop.value}" for prop in self.property_instances.all()])
+        return f"{self.product_instance.name} [{properties}] - {self.quantity} шт."
+
+    def is_in_stock(self):
+        """Проверяет, есть ли товар в наличии."""
+        return self.quantity > 0
 
 # ---------
 # Корзина

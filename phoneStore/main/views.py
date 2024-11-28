@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
-from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance
+from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
 
 
 def bootstrap_page_handler(request):
@@ -92,6 +92,42 @@ def phones_catalog(request, product_type, product_name=None):
     context = {
         'product_instances': product_instances,
         'image_instances': image_instances,
+    }
+
+    return render(request, 'catalog.html', context)
+
+# ---------
+# Склад
+# ---------
+
+def phones_catalog_two(request, product_type, product_name=None):
+    # Базовый фильтр по типу продукта
+    product_instances = ProductInstance.objects.filter(
+        product_type_id__name=product_type
+    )
+
+    # Если задано имя продукта (slug), фильтруем дополнительно по нему
+    if product_name:
+        product_instances = product_instances.filter(slug=product_name)
+
+    # Получаем только те товары, которые есть в наличии
+    stocks = Stock.objects.filter(
+        product_instance__in=product_instances,  # Привязываем Stock к выбранным ProductInstance
+        quantity__gt=0  # Учитываем только товары в наличии
+    ).prefetch_related(
+        'product_instance',  # Подтягиваем данные о продукте
+        'property_instances__property_type_id'  # Подтягиваем свойства и их типы
+    )
+
+    # Собираем изображения для продуктов
+    image_instances = ImagesInstance.objects.filter(
+        image_instance_id__in=product_instances
+    )
+
+    # Формируем контекст для шаблона
+    context = {
+        'product_instances': stocks,  # Товары с их количеством и параметрами
+        'image_instances': image_instances,  # Картинки продуктов
     }
 
     return render(request, 'catalog.html', context)
