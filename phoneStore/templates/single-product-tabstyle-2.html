@@ -10,24 +10,11 @@
                 <div class="product-details-img product-details-tab product-details-tab-2 d-flex">
                     <div class="swiper-container mr-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">
                         <div class="swiper-wrapper">
-<!--                                    {% for image in object_image %}-->
+                            {% for image in object_image %}
                             <div class="swiper-slide">
                                 <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/1.webp' %}" alt="">-->
                             </div>
-<!--                                    {% endfor %}-->
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/2.webp' %}" alt="">
-                            </div>
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/3.webp' %}" alt="">
-                            </div>
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/4.webp' %}" alt="">
-                            </div>
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/small-image/5.webp' %}" alt="">
-                            </div>
+                            {% endfor %}
                         </div>
                         <!-- Add Arrows -->
                         <!-- <div class="swiper-buttons">
@@ -40,37 +27,12 @@
                         <div class="swiper-wrapper">
                             {% for image in object_image %}
                             <div class="swiper-slide">
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/1.webp' %}" alt="">-->
                                 <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
                                 <a class="venobox full-preview" data-gall="myGallery" href="{{ image.image.url }}">
                                     <i class="fa fa-arrows-alt" aria-hidden="true"></i>
                                 </a>
                             </div>
                             {% endfor %}
-<!--                                    <div class="swiper-slide">-->
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/2.webp' %}" alt="">-->
-<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/2.webp">-->
-<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                    <div class="swiper-slide">-->
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/3.webp' %}" alt="">-->
-<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/3.webp">-->
-<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                    <div class="swiper-slide">-->
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/4.webp' %}" alt="">-->
-<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/4.webp">-->
-<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                    <div class="swiper-slide">-->
-<!--                                        <img class="img-responsive m-auto" src="{% static 'assets/images/product-image/zoom-image/5.webp' %}" alt="">-->
-<!--                                        <a class="venobox full-preview" data-gall="myGallery" href="assets/images/product-image/zoom-image/5.webp">-->
-<!--                                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
                         </div>
                     </div>
                 </div>
@@ -80,7 +42,7 @@
                     <h1>{{ object_name.name }}</h1>
                     <div class="pricing-meta">
                         <ul class="d-flex">
-                            <li class="new-price">{{object_price}}</li>
+                            <li class="new-price">{{object_price}} рублей</li>
                         </ul>
                     </div>
 

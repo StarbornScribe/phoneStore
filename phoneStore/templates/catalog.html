@@ -5,6 +5,27 @@
 <!-- Shop Page Start  -->
         <div class="shop-category-area pt-100px pb-100px">
             <div class="container">
+                <div class="page-heading">
+                    <div class="wrapper-inside">
+                        <div class="page-heading-holder">
+                            <h1>iPhone</h1>
+                        </div>
+                    </div>
+                </div>
+                 <div class="product-grid">
+                    {% for product in product_instances %}
+                    <div class="product-item">
+                        <a href="phones/{{product.slug}}">
+                            <div class="product-img">
+                                <img src="{{ product.imagesinstance_set.first.image.url }}" alt="{{ product.name }}">
+                            </div>
+                            <div class="product-name">{{ product.name }}</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="container">
                 <div class="row">
                     <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
                         <!-- Shop Bottom Area Start -->
@@ -23,9 +44,13 @@
                                                             <span class="badges">10%</span>
                                                             <div class="thumb">
                                                                 <a href="{{ el.get_absolute_url }}" class="image">
-                                                                    {% for im in el.imagesinstance_set.all %}
-                                                                    <img src="{{ im.image.url }}" alt="Image for {{ el.product_type_id.name }}">
-                                                                    {% endfor %}
+                                                                {% with el.imagesinstance_set.all|first as first_image %}
+                                                                    {% if first_image %}
+                                                                        <img src="{{ first_image.image.url }}" alt="Image for {{ el.product_type_id.name }}">
+                                                                    {% else %}
+                                                                        <img src="/path/to/default/image.jpg" alt="Default Image">
+                                                                    {% endif %}
+                                                                {% endwith %}
                                                                 </a>
                                                             </div>
                                                             <div class="content">

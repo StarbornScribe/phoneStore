@@ -59,7 +59,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="index.html"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
+                                <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
                             </div>
                         </div>
 
@@ -146,8 +146,8 @@
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="about.html">About</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i class="fa fa-angle-down"></i></a>
+                                <li><a href="about.html">iPad</a></li>
+                                <li class="dropdown position-static"><a href="about.html">Mac <i class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu d-block">
                                         <li class="d-flex">
                                             <ul class="d-block">
@@ -179,7 +179,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown position-static"><a href="#">Shop <i
+                                <li class="dropdown position-static"><a href="#">Air Pods <i
                                     class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu d-block">
                                         <li class="d-flex">
@@ -226,7 +226,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
+                                <li class="dropdown "><a href="#">Аксессуары <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li class="dropdown position-static"><a href="blog-grid-left-sidebar.html">Blog Grid
                                                 <i class="fa fa-angle-right"></i></a>
@@ -525,9 +525,9 @@
                             <div class="col-md-6 col-lg-3 mb-md-30px mb-lm-30px">
                                 <div class="single-wedge">
                                     <div class="footer-logo">
-                                        <a href="index.html"><img src="{% static 'assets/images/logo/footer-logo.png' %}" alt="footer-logo" width="100"></a>
+                                        <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/footer-logo.png' %}" alt="footer-logo" width="100"></a>
                                     </div>
-                                    <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do eiusmod templ incididunt ut labore
+                                    <p class="about-text">Делаем ваш мир лучше
                                     </p>
                                     <ul class="link-follow">
                                         <li>
@@ -550,6 +550,7 @@
                                 </div>
                             </div>
                             <!-- End single blog -->
+
                             <!-- Start single blog -->
                             <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-60px">
                                 <div class="single-wedge">
@@ -568,6 +569,7 @@
                                 </div>
                             </div>
                             <!-- End single blog -->
+
                             <!-- Start single blog -->
                             <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-40px">
                                 <div class="single-wedge">
@@ -586,14 +588,15 @@
                                 </div>
                             </div>
                             <!-- End single blog -->
+
                             <!-- Start single blog -->
                             <div class="col-md-6 col-lg-3 col-sm-12">
                                 <div class="single-wedge">
-                                    <h4 class="footer-herading">Contact Info</h4>
+                                    <h4 class="footer-herading">Наши контакты</h4>
                                     <div class="footer-links">
                                         <!-- News letter area -->
-                                        <p class="address">Address: Your Address Goes Here.</p>
-                                        <p class="phone">Phone/Fax:<a href="tel:0123456789"> 0123456789</a></p>
+                                        <p class="address">Адрес: г. Нижний Новгород</p>
+                                        <p class="phone">Телефон:<a href="tel:0123456789"> +7 (999) 999-99-99</a></p>
                                         <p class="mail">Email:<a href="mailto:demo@example.com"> demo@example.com</a></p>
                                         <p class="mail"><a href="https://demo@example.com"> demo@example.com</a></p>
                                         <!-- News letter area  End -->
@@ -601,22 +604,6 @@
                                 </div>
                             </div>
                             <!-- End single blog -->
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="container">
-                        <div class="line-shape-top line-height-1">
-                            <div class="row flex-md-row-reverse align-items-center">
-                                <div class="col-md-6 text-center text-md-end">
-                                    <div class="payment-mth"><a href="#"><img class="img img-fluid" src="static/assets/images/icons/payment.png" alt="payment-image"></a></div>
-                                </div>
-                                <div class="col-md-6 text-center text-md-start">
-                                    <p class="copy-text"> © 2021 <strong>Hmart</strong> Made With <i class="fa fa-heart"
-                                        aria-hidden="true"></i> By <a class="company-name" href="https://themeforest.net/user/codecarnival/portfolio">
-                                            <strong> Codecarnival </strong></a>.</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

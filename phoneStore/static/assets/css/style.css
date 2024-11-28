@@ -5694,7 +5694,7 @@ body.offcanvas-open {
 }
 .footer-area .footer-top .single-wedge .footer-herading {
   font-size: 24px;
-  text-transform: capitalize;
+  text-transform: initial;
   font-weight: 500;
   margin-bottom: 20px;
   position: relative;
@@ -9761,4 +9761,25 @@ Pages - My Account
     width: 190px;
     height: 54px;
   }
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: left;
+    margin: 0 0 43px;
+}
+.product-item {
+    width: 150px;
+    text-align: center;
+}
+.product-item img {
+    width: 70%;
+    height: auto;
+    border-radius: 8px;
+}
+.product-name {
+    margin-top: 10px;
+    font-size: 14px;
 }

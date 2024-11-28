@@ -1,7 +1,9 @@
+import json
+from django.http import JsonResponse
 from django.http import Http404
 from typing import List, Any, Dict
-from django.shortcuts import render
 from django.db.models import QuerySet
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
@@ -38,10 +40,21 @@ class PhoneDetailView(DetailView):
         slug_name: str = self.kwargs['slug']
         context = super(PhoneDetailView, self).get_context_data(*args, **kwargs)
 
-        context['object_name'] = ProductInstance.objects.get(slug=slug_name)
-        context['object_price'] = PropertyInstance.objects.get(property_type_id__name='Цена')
+        product_instance = ProductInstance.objects.get(slug=slug_name)
+
+        context['object_name'] = product_instance
         context['object_image'] = ImagesInstance.objects.filter(image_instance_id__slug=slug_name)
         context['object_property'] = PropertyInstance.objects.filter(product_instance_id__slug=slug_name)
+
+        # Извлекаем цену
+        try:
+            price_property = PropertyInstance.objects.get(
+                product_instance_id=product_instance,
+                property_type_id__name="Цена"
+            )
+            context['object_price'] = price_property.value
+        except PropertyInstance.DoesNotExist:
+            context['object_price'] = "Цена не указана"
 
         return context
 
@@ -52,16 +65,27 @@ class PhoneDetailView(DetailView):
     #     return PropertyInstance
 
   
-def phones_catalog(request):
+def phones_catalog(request, product_type, product_name=None):
     # logger.info("View accessed")
     # pdb.set_trace()
     # This is a basic check to see if the view is reached.
     # Retrieve all product instances
-    product_instances = ProductInstance.objects.filter(product_type_id__name='phones').prefetch_related(
-        'propertyinstance_set__property_type_id'
-    )
+    # product_instances = ProductInstance.objects.filter(product_type_id__name=product_type).prefetch_related(
+    #     'propertyinstance_set__property_type_id'
+    # )
 
-    # product_instances: ProductInstance = ProductInstance.objects.all().prefetch_related('propertyinstance_set__property_type_id')
+    if product_name:
+        # Если задан product_name, фильтруем также по имени
+        product_instances = ProductInstance.objects.filter(
+            product_type_id__name=product_type,
+            slug=product_name
+        ).prefetch_related('propertyinstance_set__property_type_id')
+    else:
+        # Если product_name не задан, фильтруем только по типу продукта
+        product_instances = ProductInstance.objects.filter(
+            product_type_id__name=product_type
+        ).prefetch_related('propertyinstance_set__property_type_id')
+
     image_instances: ImagesInstance = ImagesInstance.objects.all()
 
     # image_instances: ImagesInstance = ImagesInstance.objects.select_related('image_instance_id__product_type_id')
@@ -72,6 +96,79 @@ def phones_catalog(request):
 
     return render(request, 'catalog.html', context)
 
-  
-def view_shop_catalog(request):
-    return render(request, 'test.html')
+
+# -----------
+# Корзина
+# -----------
+
+def add_to_cart(request, product_id):
+    """
+    Добавление товара в корзину:
+    """
+    product = get_object_or_404(ProductInstance, id=product_id)
+    quantity = int(request.GET.get('quantity', 1))  # Количество товара (по умолчанию 1)
+
+    # Загружаем корзину из cookies
+    cart = request.cart['cart']
+
+    # Проверяем, есть ли товар уже в корзине
+    for item in cart:
+        if item['product_id'] == product_id:
+            item['quantity'] += quantity
+            break
+    else:
+        cart.append({'product_id': product_id, 'quantity': quantity})
+
+    # Обновляем cookies
+    response = JsonResponse({'message': 'Товар добавлен в корзину'})
+    response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
+
+    return response
+
+
+def remove_from_cart(request, product_id):
+    """
+    Удаление товара из корзины
+    """
+    cart = request.cart['cart']
+    cart = [item for item in cart if item['product_id'] != product_id]
+
+    response = JsonResponse({'message': 'Товар удалён из корзины'})
+    response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
+
+    return response
+
+
+def cart_detail(request):
+    """
+    Отображение корзины
+    """
+    cart = request.cart['cart']
+
+    # Получаем товары из базы данных
+    product_ids = [item['product_id'] for item in cart]
+    products = ProductInstance.objects.filter(id__in=product_ids)
+
+    # Собираем данные для отображения
+    cart_items = []
+    total_price = 0
+
+    for item in cart:
+        product = products.get(id=item['product_id'])
+        price = product.propertyinstance_set.filter(property_type_id__name='Цена').first()
+        price_value = int(price.value) if price else 0
+        total_item_price = price_value * item['quantity']
+
+        cart_items.append({
+            'product': product,
+            'quantity': item['quantity'],
+            'price': price_value,
+            'total_price': total_item_price,
+        })
+
+        total_price += total_item_price
+
+    return render(request, 'cart_detail.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    })

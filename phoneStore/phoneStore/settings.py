@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'phoneStore.middleware.CartMiddleware'
 ]
 
 ROOT_URLCONF = 'phoneStore.urls'
@@ -131,6 +132,7 @@ MEDIA_ROOT = BASE_DIR / 'media'  # Absolute path to the media directory
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 LOGGING = {
     'version': 1,

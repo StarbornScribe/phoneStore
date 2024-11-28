@@ -23,9 +23,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('', views.bootstrap_page_handler, name='bootstrap_page'),
+    path('', views.bootstrap_page_handler, name='home'),
     path('product/<slug:slug>/', views.PhoneDetailView.as_view(), name='phone-detail'),
-    path('phones-catalog/', views.phones_catalog, name='phones_catalog'),
+    # path('phones-catalog/', views.phones_catalog, name='phones_catalog'),
+    path('phones-catalog/<str:product_type>', views.phones_catalog, name='phones_catalog'),
+    path('phones-catalog/<str:product_type>/<str:product_name>', views.phones_catalog, name='phones_catalog_with_name'),
+    path('cart/', views.cart_detail, name='cart_detail'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
 ]
 
 if settings.DEBUG:
