@@ -331,8 +331,8 @@
             Product Details Slider 
         ------------------------------ */
     var zoomThumb = new Swiper('.zoom-thumbs-2', {
-        spaceBetween: 20,
-        slidesPerView: 5,
+        spaceBetween: 40,
+        slidesPerView: 4,
         direction: 'vertical',
         freeMode: true,
         watchSlidesVisibility: true,

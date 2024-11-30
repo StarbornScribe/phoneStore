@@ -1,6 +1,8 @@
 from django.db import models
+from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 
 class ProductType(models.Model):
@@ -31,20 +33,12 @@ class ProductInstance(models.Model):
 
 
 class PropertyType(models.Model):
-    # Описывает какие названия характеристик могут быть у продукта продукта (вес, ширина, высота и.т.д)
+    # Описывает какие названия характеристик могут быть у продукта (вес, ширина, высота и.т.д)
     product_type_id = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
-
-
-class ImagesInstance(models.Model):
-    image_instance_id = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/')
-
-    def __str__(self):
-        return f"Image for {self.image_instance_id.name}"
 
 
 class PropertyInstance(models.Model):
@@ -55,6 +49,69 @@ class PropertyInstance(models.Model):
     # image_instance_id = models.ForeignKey(ImagesInstance, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.property_type_id.name}: {self.value}'
+        return f"{self.property_type_id.name}: {self.value} ({self.product_instance_id.name})"
+
+# ---------
+# Склад
+# ---------
 
 
+class Stock(models.Model):
+    product_instance = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
+    property_instances = models.ManyToManyField(PropertyInstance, blank=True)
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        properties = ", ".join([f"{prop.property_type_id.name}: {prop.value}" for prop in self.property_instances.all()])
+        return f"{self.product_instance.name} [{properties}] - {self.quantity} шт."
+
+    def is_in_stock(self):
+        """Проверяет, есть ли товар в наличии."""
+        return self.quantity > 0
+
+
+class ImagesInstance(models.Model):
+    image_instance_id = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return f"Image for {self.image_instance_id.product_instance}"
+
+# ---------
+# Корзина
+# ---------
+
+
+class Cart(models.Model):
+    """
+    Хранит корзину пользователя.
+    Если пользователь не авторизован, корзина связывается с идентификатором сессии.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Связь с пользователем
+    session_id = models.CharField(max_length=255, null=True, blank=True)  # Для анонимных пользователей
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        # Добавляем аннотацию типа для user (Optional[User] означает, что user может быть None)
+        user_display = self.user.username if self.user else "Anonymous"
+        return f"Cart {self.id} for {user_display}"
+
+
+class CartItem(models.Model):
+    """
+    Описывает конкретные товары и их количество в корзине.
+    """
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name}"
+
+    @property
+    def total_price(self):
+        # Допустим, в характеристиках продукта есть цена
+        price = self.product.propertyinstance_set.filter(property_type_id__name='Цена').first()
+        return int(price.value) * self.quantity if price else 0
