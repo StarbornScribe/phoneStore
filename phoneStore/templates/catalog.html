@@ -13,11 +13,11 @@
                     </div>
                 </div>
                  <div class="product-grid">
-                    {% for product in product_instances %}
+                    {% for product in filter_catalog %}
                     <div class="product-item">
                         <a href="phones/{{product.slug}}">
                             <div class="product-img">
-                                <img src="{{ product.imagesinstance_set.first.image.url }}" alt="{{ product.name }}">
+                                <img src="{{ product.image }}" alt="{{ product.name }}">
                             </div>
                             <div class="product-name">{{ product.name }}</div>
                         </a>
@@ -25,16 +25,6 @@
                     {% endfor %}
                 </div>
             </div>
-<!--            <div>-->
-<!--                {% for stock in product_instances %}-->
-<!--                <h1>{{ stock.product_instance.name }}</h1>-->
-<!--                        <ul>-->
-<!--                            {% for prop in stock.property_instances.all %}-->
-<!--                                <li>{{ prop.property_type_id.name }}: {{ prop.value }}</li>-->
-<!--                            {% endfor %}-->
-<!--                        </ul>-->
-<!--                {% endfor %}-->
-<!--            </div>-->
             <div class="container">
                 <div class="row">
                     <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
@@ -46,7 +36,7 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="shop-grid">
                                             <div class="row mb-n-30px">
-                                                {% for el in product_instances %}
+                                                {% for product_el in catalog_data %}
 <!--                                                Убрал эту проверку, так как во urls мы передаем тип, а во вьюхе ищем объекты исходя из него. Т.е, каталог теперь не только для телефонов-->
 <!--                                                    {% if el.product_type_id.name == 'phones' %}-->
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
@@ -54,14 +44,15 @@
                                                         <div class="product">
                                                             <span class="badges">10%</span>
                                                             <div class="thumb">
-                                                                <a href="{{ el.get_absolute_url }}" class="image">
-                                                                {% with el.imagesinstance_set.all|first as first_image %}
-                                                                    {% if first_image %}
-                                                                        <img src="{{ first_image.image.url }}" alt="Image for {{ el.product_type_id.name }}">
-                                                                    {% else %}
-                                                                        <img src="/path/to/default/image.jpg" alt="Default Image">
-                                                                    {% endif %}
-                                                                {% endwith %}
+                                                                <a href="{{ product_el.get_absolute_url }}" class="image">
+                                                                <img src="{{ product_el.image}}" alt="Default Image">
+<!--                                                                {% with product_el.imagesinstance_set.all|first as first_image %}-->
+<!--                                                                    {% if first_image %}-->
+<!--                                                                        <img src="{{ first_image.image.url }}" alt="Image for {{ el.product_type_id.name }}">-->
+<!--                                                                    {% else %}-->
+<!--                                                                        <img src="/path/to/default/image.jpg" alt="Default Image">-->
+<!--                                                                    {% endif %}-->
+<!--                                                                {% endwith %}-->
                                                                 </a>
                                                             </div>
                                                             <div class="content">

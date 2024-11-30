@@ -126,6 +126,78 @@ def phones_catalog_two(request, product_type, product_name=None):
     return render(request, 'catalog.html', context)
 
 
+def phones_catalog_thrid(request, product_type, product_name=None):
+    # Базовый фильтр по типу продукта
+    product_instances = ProductInstance.objects.filter(
+        product_type_id__name=product_type
+    )
+
+    # Если задано имя продукта (slug), фильтруем дополнительно по нему
+    if product_name:
+        product_instances = product_instances.filter(slug=product_name)
+
+    # Получаем только те товары, которые есть в наличии
+    stocks = Stock.objects.filter(
+        product_instance__in=product_instances,  # Привязываем Stock к выбранным ProductInstance
+        quantity__gt=0  # Учитываем только товары в наличии
+    ).select_related(
+        'product_instance',  # Подтягиваем данные о продукте
+        'product_instance__product_type_id'  # Подтягиваем данные о типе продукта
+    ).prefetch_related(
+        'property_instances',  # Подтягиваем свойства продукта
+        'property_instances__property_type_id',  # Типы свойств
+        'imagesinstance_set'  # Изображения через связанный ImageInstance
+    )
+
+    # Подготавливаем данные для отображения
+    catalog_data = []
+    for stock in stocks:
+        # Для каждого товара собираем нужную информацию
+        catalog_data.append({
+            'product_name': stock.product_instance.name,
+            'product_type': stock.product_instance.product_type_id.name,
+            'slug': stock.product_instance.slug,
+            'quantity': stock.quantity,
+            'price': stock.price,
+            'properties': [
+                {
+                    'name': prop.property_type_id.name,
+                    'value': prop.value
+                }
+                for prop in stock.property_instances.all()
+            ],
+            'images': [
+                image.image.url
+                for image in stock.imagesinstance_set.all()
+            ]
+        })
+
+    # Словарь для формирования фильтра продуктов вверху страницы
+    filter_catalog: List[Dict[str, Any]]= []
+    names_list: List[str] = []
+
+    for product_data in catalog_data:
+        if product_data['product_name'] not in names_list:      # Проверка на уникальность
+            names_list.append(product_data['product_name'])     # Добавляем значение product_name в список, чтобы проходила проверка на уникальность
+            filter_catalog.append({
+                'name': product_data['product_name'],
+                'image': product_data['images'][0]  # Добавляем первое изображение продукта
+            })
+
+            # filter_catalog['product_names'].append(product_data['product_name'])
+            # filter_catalog['product_images'].append(product_data['images'][0]) # Добавляем первое изображение продукта
+
+    # Формируем контекст для шаблона
+    context = {
+        'filter_catalog': filter_catalog,
+        'catalog_data': catalog_data,  # Передаем готовые данные для отображения
+        'product_type': product_type,  # Передаем тип продукта
+        'product_name': product_name,  # Передаем конкретное имя продукта, если указано
+    }
+
+    return render(request, 'catalog.html', context)
+
+
 # -----------
 # Корзина
 # -----------
