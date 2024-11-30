@@ -41,14 +41,6 @@ class PropertyType(models.Model):
         return self.name
 
 
-class ImagesInstance(models.Model):
-    image_instance_id = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/')
-
-    def __str__(self):
-        return f"Image for {self.image_instance_id.name}"
-
-
 class PropertyInstance(models.Model):
     # Задаёт значение характеристики конкретного продукта (вес равный 10, операционка iOS и т.д)
     product_instance_id = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
@@ -62,10 +54,13 @@ class PropertyInstance(models.Model):
 # ---------
 # Склад
 # ---------
+
+
 class Stock(models.Model):
     product_instance = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
     property_instances = models.ManyToManyField(PropertyInstance, blank=True)
     quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         properties = ", ".join([f"{prop.property_type_id.name}: {prop.value}" for prop in self.property_instances.all()])
@@ -75,9 +70,18 @@ class Stock(models.Model):
         """Проверяет, есть ли товар в наличии."""
         return self.quantity > 0
 
+
+class ImagesInstance(models.Model):
+    image_instance_id = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return f"Image for {self.image_instance_id.product_instance}"
+
 # ---------
 # Корзина
 # ---------
+
 
 class Cart(models.Model):
     """

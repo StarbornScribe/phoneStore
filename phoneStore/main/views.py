@@ -66,14 +66,6 @@ class PhoneDetailView(DetailView):
 
   
 def phones_catalog(request, product_type, product_name=None):
-    # logger.info("View accessed")
-    # pdb.set_trace()
-    # This is a basic check to see if the view is reached.
-    # Retrieve all product instances
-    # product_instances = ProductInstance.objects.filter(product_type_id__name=product_type).prefetch_related(
-    #     'propertyinstance_set__property_type_id'
-    # )
-
     if product_name:
         # Если задан product_name, фильтруем также по имени
         product_instances = ProductInstance.objects.filter(
@@ -99,6 +91,7 @@ def phones_catalog(request, product_type, product_name=None):
 # ---------
 # Склад
 # ---------
+
 
 def phones_catalog_two(request, product_type, product_name=None):
     # Базовый фильтр по типу продукта
