@@ -169,7 +169,9 @@ def phones_catalog_thrid(request, product_type, product_name=None):
             'images': [
                 image.image.url
                 for image in stock.imagesinstance_set.all()
-            ]
+            ],
+            'url': stock.product_instance.get_absolute_url(),
+            'first_image': stock.imagesinstance_set.all().first()
         })
 
     # Словарь для формирования фильтра продуктов вверху страницы

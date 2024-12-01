@@ -37,35 +37,23 @@
                                         <div class="tab-pane fade show active" id="shop-grid">
                                             <div class="row mb-n-30px">
                                                 {% for product_el in catalog_data %}
-<!--                                                Убрал эту проверку, так как во urls мы передаем тип, а во вьюхе ищем объекты исходя из него. Т.е, каталог теперь не только для телефонов-->
-<!--                                                    {% if el.product_type_id.name == 'phones' %}-->
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
                                                         <!-- Single Product -->
+                                                        <p>{{ product_el.first_image }}</p>
                                                         <div class="product">
                                                             <span class="badges">10%</span>
                                                             <div class="thumb">
-                                                                <a href="{{ product_el.get_absolute_url }}" class="image">
-                                                                <img src="{{ product_el.image}}" alt="Default Image">
-<!--                                                                {% with product_el.imagesinstance_set.all|first as first_image %}-->
-<!--                                                                    {% if first_image %}-->
-<!--                                                                        <img src="{{ first_image.image.url }}" alt="Image for {{ el.product_type_id.name }}">-->
-<!--                                                                    {% else %}-->
-<!--                                                                        <img src="/path/to/default/image.jpg" alt="Default Image">-->
-<!--                                                                    {% endif %}-->
-<!--                                                                {% endwith %}-->
+                                                                <a href="{{ product_el.url }}" class="image">
+                                                                <img src="{{ product_el.images.1}}" alt="Default Image">
                                                                 </a>
                                                             </div>
                                                             <div class="content">
-                                                                <span class="category"><a href="#">Accessories</a></span>
+                                                                <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
                                                                 <h5 class="title">
-                                                                    <a href="{{ el.get_absolute_url }}">{{ el.name }}</a>
+                                                                    <a href="{{ el.get_absolute_url }}">{{ product_el.product_name }}</a>
                                                                 </h5>
                                                                 <span class="price">
-                                                                    {% for property in el.propertyinstance_set.all %}
-                                                                        {% if property.property_type_id.name == 'Цена' %}
-                                                                            <span class="new">Цена: {{ property.value }} руб.</span>
-                                                                        {% endif %}
-                                                                    {% endfor %}
+                                                                    <span class="new">Цена: {{ product_el.price }} руб.</span>
                                                                 </span>
                                                             </div>
                                                             <div class="actions">
@@ -84,7 +72,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-<!--                                                    {% endif %}-->
                                                 {% endfor %}
                                             </div>
                                         </div>
