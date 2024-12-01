@@ -2462,7 +2462,7 @@ body.offcanvas-open {
 .product .content .title a {
   text-decoration: none;
   color: #000000;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
 }
 @media only screen and (max-width: 575px) {
@@ -2478,10 +2478,19 @@ body.offcanvas-open {
 .product .content .price {
   font-size: 18px;
   font-family: "Poppins", sans-serif;
-  line-height: 1;
+  line-height: 2;
   font-weight: 500;
   color: #666666;
 }
+
+.product .content .color {
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  line-height: 2;
+  font-weight: 500;
+  color: #666666;
+}
+
 .product .content .price:not(:last-child) {
   margin-bottom: 20px;
 }

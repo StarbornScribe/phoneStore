@@ -170,8 +170,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
                 image.image.url
                 for image in stock.imagesinstance_set.all()
             ],
-            'url': stock.product_instance.get_absolute_url(),
-            'first_image': stock.imagesinstance_set.all().first()
+            'url': stock.product_instance.get_absolute_url()
         })
 
     # Словарь для формирования фильтра продуктов вверху страницы
@@ -183,7 +182,8 @@ def phones_catalog_thrid(request, product_type, product_name=None):
             names_list.append(product_data['product_name'])     # Добавляем значение product_name в список, чтобы проходила проверка на уникальность
             filter_catalog.append({
                 'name': product_data['product_name'],
-                'image': product_data['images'][0]  # Добавляем первое изображение продукта
+                'image': product_data['images'][0], # Добавляем первое изображение продукта
+                'slug': product_data['slug']
             })
 
             # filter_catalog['product_names'].append(product_data['product_name'])

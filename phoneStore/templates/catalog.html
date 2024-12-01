@@ -44,7 +44,7 @@
                                                             <span class="badges">10%</span>
                                                             <div class="thumb">
                                                                 <a href="{{ product_el.url }}" class="image">
-                                                                <img src="{{ product_el.images.1}}" alt="Default Image">
+                                                                <img src="{{ product_el.images.0}}" alt="Default Image">
                                                                 </a>
                                                             </div>
                                                             <div class="content">
@@ -52,6 +52,13 @@
                                                                 <h5 class="title">
                                                                     <a href="{{ el.get_absolute_url }}">{{ product_el.product_name }}</a>
                                                                 </h5>
+                                                                <span class="color">
+                                                                {% for prop in product_el.properties %}
+                                                                    {% if prop.name == "Цвет" %}
+                                                                    <span class="new">Цвет: {{ prop.value }}</span>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                </span>
                                                                 <span class="price">
                                                                     <span class="new">Цена: {{ product_el.price }} руб.</span>
                                                                 </span>
