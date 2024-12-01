@@ -92,38 +92,54 @@ def phones_catalog(request, product_type, product_name=None):
 # Склад
 # ---------
 
-
-def phones_catalog_two(request, product_type, product_name=None):
-    # Базовый фильтр по типу продукта
-    product_instances = ProductInstance.objects.filter(
-        product_type_id__name=product_type
+def get_filtered_stock(request, product_type, product_name, product_color, memory_size):
+    """
+    View для получения объекта Stock на основе параметров.
+    """
+    # Находим экземпляр продукта по типу и имени
+    product_instance = get_object_or_404(
+        ProductInstance,
+        product_type_id__name=product_type,
+        slug=product_name
     )
 
-    # Если задано имя продукта (slug), фильтруем дополнительно по нему
-    if product_name:
-        product_instances = product_instances.filter(slug=product_name)
-
-    # Получаем только те товары, которые есть в наличии
-    stocks = Stock.objects.filter(
-        product_instance__in=product_instances,  # Привязываем Stock к выбранным ProductInstance
-        quantity__gt=0  # Учитываем только товары в наличии
-    ).prefetch_related(
-        'product_instance',  # Подтягиваем данные о продукте
-        'property_instances__property_type_id'  # Подтягиваем свойства и их типы
+    # Фильтруем свойства продукта по цвету и памяти
+    property_instances = PropertyInstance.objects.filter(
+        product_instance_id=product_instance
     )
 
-    # Собираем изображения для продуктов
-    image_instances = ImagesInstance.objects.filter(
-        image_instance_id__in=product_instances
+    # Фильтруем по цвету
+    color_property = property_instances.filter(
+        property_type_id__name="Цвет",
+        value=product_color
     )
 
-    # Формируем контекст для шаблона
+    # Фильтруем по размеру памяти
+    memory_property = property_instances.filter(
+        property_type_id__name="Память",
+        value=memory_size
+    )
+
+    # Находим объект Stock с этими свойствами
+    stock = Stock.objects.filter(
+        product_instance=product_instance,
+        property_instances__in=color_property | memory_property
+    ).distinct()
+
+    # Проверяем, нашли ли объект
+    stock_item = stock.first() if stock.exists() else None
+
+    # Подготовка данных для шаблона
     context = {
-        'product_instances': stocks,  # Товары с их количеством и параметрами
-        'image_instances': image_instances,  # Картинки продуктов
+        'product_instance': product_instance,
+        'stock_item': stock_item,
+        'product_type': product_type,
+        'product_name': product_name,
+        'product_color': product_color,
+        'memory_size': memory_size,
     }
 
-    return render(request, 'catalog.html', context)
+    return render(request, 'stock_detail.html', context)
 
 
 def phones_catalog_thrid(request, product_type, product_name=None):
