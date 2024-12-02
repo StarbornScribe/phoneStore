@@ -1,5 +1,6 @@
 {% extends "base_template.html" %}
 {% load static %}
+{% load helper_filters %}
 
 {% block content %}
 <!-- Shop Page Start  -->
@@ -39,25 +40,21 @@
                                                 {% for product_el in catalog_data %}
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
                                                         <!-- Single Product -->
-                                                        <p>{{ product_el.first_image }}</p>
                                                         <div class="product">
                                                             <span class="badges">10%</span>
                                                             <div class="thumb">
-                                                                <a href="{{ product_el.url }}" class="image">
+                                                                <a href="{{ product_el.slug }}" class="image">
                                                                 <img src="{{ product_el.images.0}}" alt="Default Image">
                                                                 </a>
                                                             </div>
                                                             <div class="content">
                                                                 <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
                                                                 <h5 class="title">
-                                                                    <a href="{{ el.get_absolute_url }}">{{ product_el.product_name }}</a>
+                                                                    {% concat_strings product_el.slug "/" product_el.color "/" product_el as prod_url %}
+                                                                    <a href="{{ prod_url }}">{{ product_el.product_name }}</a>
                                                                 </h5>
                                                                 <span class="color">
-                                                                {% for prop in product_el.properties %}
-                                                                    {% if prop.name == "Цвет" %}
-                                                                    <span class="new">Цвет: {{ prop.value }}</span>
-                                                                    {% endif %}
-                                                                {% endfor %}
+                                                                    <span class="new">Цвет: {{ product_el.color }}</span>
                                                                 </span>
                                                                 <span class="price">
                                                                     <span class="new">Цена: {{ product_el.price }} руб.</span>

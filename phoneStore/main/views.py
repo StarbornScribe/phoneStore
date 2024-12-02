@@ -92,6 +92,7 @@ def phones_catalog(request, product_type, product_name=None):
 # Склад
 # ---------
 
+
 def get_filtered_stock(request, product_type, product_name, product_color, memory_size):
     """
     View для получения объекта Stock на основе параметров.
@@ -186,11 +187,11 @@ def phones_catalog_thrid(request, product_type, product_name=None):
                 image.image.url
                 for image in stock.imagesinstance_set.all()
             ],
-            'url': stock.product_instance.get_absolute_url()
+            'color': [prop for prop in stock.property_instances.all() if prop.property_type_id.name == 'Цвет'][0].value
         })
 
     # Словарь для формирования фильтра продуктов вверху страницы
-    filter_catalog: List[Dict[str, Any]]= []
+    filter_catalog: List[Dict[str, Any]] = []
     names_list: List[str] = []
 
     for product_data in catalog_data:
