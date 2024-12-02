@@ -93,54 +93,36 @@ def phones_catalog(request, product_type, product_name=None):
 # ---------
 
 
-def get_filtered_stock(request, product_type, product_name, product_color, memory_size):
-    """
-    View для получения объекта Stock на основе параметров.
-    """
-    # Находим экземпляр продукта по типу и имени
-    product_instance = get_object_or_404(
-        ProductInstance,
-        product_type_id__name=product_type,
-        slug=product_name
-    )
+def product_detail_view(request, slug, stock_id):
+    # Получаем объект ProductInstance по slug
+    product_instance = get_object_or_404(ProductInstance, slug=slug)
 
-    # Фильтруем свойства продукта по цвету и памяти
-    property_instances = PropertyInstance.objects.filter(
-        product_instance_id=product_instance
-    )
-
-    # Фильтруем по цвету
-    color_property = property_instances.filter(
-        property_type_id__name="Цвет",
-        value=product_color
-    )
-
-    # Фильтруем по размеру памяти
-    memory_property = property_instances.filter(
-        property_type_id__name="Память",
-        value=memory_size
-    )
-
-    # Находим объект Stock с этими свойствами
-    stock = Stock.objects.filter(
-        product_instance=product_instance,
-        property_instances__in=color_property | memory_property
-    ).distinct()
-
-    # Проверяем, нашли ли объект
-    stock_item = stock.first() if stock.exists() else None
+    # Получаем конкретную запись Stock по ID
+    stock = get_object_or_404(Stock, id=stock_id, product_instance=product_instance)
 
     # Подготовка данных для шаблона
-    context = {
-        'product_instance': product_instance,
-        'stock_item': stock_item,
-        'product_type': product_type,
-        'product_name': product_name,
-        'product_color': product_color,
-        'memory_size': memory_size,
+    stock_data = {
+        'quantity': stock.quantity,
+        'price': stock.price,
+        'properties': [
+            {
+                'name': prop.property_type_id.name,
+                'value': prop.value
+            }
+            for prop in stock.property_instances.all()
+        ],
+        'images': [
+            image.image.url
+            for image in stock.imagesinstance_set.all()
+        ]
     }
 
-    return render(request, 'stock_detail.html', context)
+    context = {
+        'product': product_instance,
+        'stock_data': stock_data,
+    }
+
+    return render(request, 'single-product-tabstyle-2.html', context)
 
 
 def phones_catalog_thrid(request, product_type, product_name=None):
@@ -151,7 +133,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 
     # Если задано имя продукта (slug), фильтруем дополнительно по нему
     if product_name:
-        product_instances = product_instances.filter(slug=product_name)
+        product_instances = product_instances.filter(name=product_name)
 
     # Получаем только те товары, которые есть в наличии
     stocks = Stock.objects.filter(
@@ -173,6 +155,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
         catalog_data.append({
             'product_name': stock.product_instance.name,
             'product_type': stock.product_instance.product_type_id.name,
+            'stock_id': stock.id,
             'slug': stock.product_instance.slug,
             'quantity': stock.quantity,
             'price': stock.price,
@@ -198,6 +181,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
         if product_data['product_name'] not in names_list:      # Проверка на уникальность
             names_list.append(product_data['product_name'])     # Добавляем значение product_name в список, чтобы проходила проверка на уникальность
             filter_catalog.append({
+                'type': product_data['product_type'],
                 'name': product_data['product_name'],
                 'image': product_data['images'][0], # Добавляем первое изображение продукта
                 'slug': product_data['slug']

@@ -2299,7 +2299,7 @@ body.offcanvas-open {
   border-color: #e1e1e1;
   border-style: solid;
   border-radius: 13px;
-  padding: 5px;
+  padding: 20px;
   margin-bottom: 0;
   -webkit-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
@@ -4659,7 +4659,7 @@ body.offcanvas-open {
   display: inline-block;
   padding-right: 10px;
   color: #266bf9;
-  content: "//";
+  content: ">";
 }
 
 .page-pagination li {
@@ -9791,4 +9791,24 @@ Pages - My Account
 .product-name {
     margin-top: 10px;
     font-size: 14px;
+}
+
+.page-heading-title {
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.product-video {
+    width: 100%; /* Full width of its parent container */
+    max-width: 1100px; /* Set a maximum width */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Optional: Remove inline-block gap below the video */
+    margin: 0 auto; /* Center the video */
+}
+
+.breadcrumb-catalog {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }

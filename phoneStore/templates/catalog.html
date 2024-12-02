@@ -4,11 +4,37 @@
 
 {% block content %}
 <!-- Shop Page Start  -->
-        <div class="shop-category-area pt-100px pb-100px">
+<!--        <div class="shop-category-area pt-100px pb-100px">-->
+        <div class="shop-category-area pt-0px pb-100px">
             <div class="container">
                 <div class="page-heading">
                     <div class="wrapper-inside">
                         <div class="page-heading-holder">
+                            <video class="product-video" controls autoplay muted loop>
+                                <source src="/media/videos/introducing_iphone_16_concept_trailer.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    <nav class="breadcrumb-catalog" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'home' %}">Главная</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'phones_catalog' product_type=product_type %}">{{ product_type }}</a>
+                            </li>
+                            {% if product_name %}
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'phones_catalog_with_name' product_type=product_type product_name=product_name %}">{{ product_name }}</a>
+                                </li>
+                            {% endif %}
+                            <li class="breadcrumb-item active" aria-current="page">
+                                {{ current_page }}
+                            </li>
+                        </ol>
+                    </nav>
+                    </div>
+                    <div class="wrapper-inside">
+                        <div class="page-heading-title">
                             <h1>iPhone</h1>
                         </div>
                     </div>
@@ -16,11 +42,11 @@
                  <div class="product-grid">
                     {% for product in filter_catalog %}
                     <div class="product-item">
-                        <a href="phones/{{product.slug}}">
+                        <a href="{% url 'phones_catalog_with_name' product_type=product.type product_name=product.name %}">
                             <div class="product-img">
                                 <img src="{{ product.image }}" alt="{{ product.name }}">
                             </div>
-                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-name">{{product.name}}</div>
                         </a>
                     </div>
                     {% endfor %}
@@ -41,23 +67,22 @@
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
                                                         <!-- Single Product -->
                                                         <div class="product">
-                                                            <span class="badges">10%</span>
+<!--                                                            <span class="badges">10%</span>-->
                                                             <div class="thumb">
-                                                                <a href="{{ product_el.slug }}" class="image">
+                                                                <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">
                                                                 <img src="{{ product_el.images.0}}" alt="Default Image">
                                                                 </a>
                                                             </div>
                                                             <div class="content">
                                                                 <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
                                                                 <h5 class="title">
-                                                                    {% concat_strings product_el.slug "/" product_el.color "/" product_el as prod_url %}
-                                                                    <a href="{{ prod_url }}">{{ product_el.product_name }}</a>
+                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">{{ product_el.product_name }}</a>
                                                                 </h5>
                                                                 <span class="color">
-                                                                    <span class="new">Цвет: {{ product_el.color }}</span>
+                                                                    <span class="new">Цвет: {{product_el.color}}</span>
                                                                 </span>
                                                                 <span class="price">
-                                                                    <span class="new">Цена: {{ product_el.price }} руб.</span>
+                                                                    <span class="new">Цена: {{product_el.price}} руб.</span>
                                                                 </span>
                                                             </div>
                                                             <div class="actions">

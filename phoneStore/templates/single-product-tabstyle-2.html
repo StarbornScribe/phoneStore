@@ -10,9 +10,9 @@
                 <div class="product-details-img product-details-tab product-details-tab-2 d-flex">
                     <div class="swiper-container mr-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">
                         <div class="swiper-wrapper">
-                            {% for image in object_image %}
+                            {% for image in stock_data.images %}
                             <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
+                                <img class="img-responsive m-auto" src="{{ image }}" alt="">
                             </div>
                             {% endfor %}
                         </div>
@@ -25,10 +25,10 @@
                     <!-- Swiper -->
                     <div class="swiper-container zoom-top-2 align-self-start">
                         <div class="swiper-wrapper">
-                            {% for image in object_image %}
+                            {% for image in stock_data.images %}
                             <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{{ image.image.url }}" alt="">
-                                <a class="venobox full-preview" data-gall="myGallery" href="{{ image.image.url }}">
+                                <img class="img-responsive m-auto" src="{{ image }}" alt="">
+                                <a class="venobox full-preview" data-gall="myGallery" href="{{ image }}">
                                     <i class="fa fa-arrows-alt" aria-hidden="true"></i>
                                 </a>
                             </div>
@@ -39,10 +39,10 @@
             </div>
             <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
                 <div class="product-details-content quickview-content ml-25px">
-                    <h1>{{ object_name.name }}</h1>
+                    <h1>{{ product.name }}</h1>
                     <div class="pricing-meta">
                         <ul class="d-flex">
-                            <li class="new-price">{{object_price}} рублей</li>
+                            <li class="new-price">{{stock_data.price}} рублей</li>
                         </ul>
                     </div>
 
@@ -72,34 +72,40 @@
                     <div id="des-details2" class="tab-pane">
                         <div class="product-anotherinfo-wrapper text-start">
                             <table>
+                                {% for property in stock_data.properties%}
                                 <tr>
-                                    <td><span>Диагональ экрана (дюйм): </span></td>
-                                    <td>1</td>
+                                    <td><span>{{property.name}}:</span></td>
+                                    <td>{{property.value}}</td>
                                 </tr>
-                                <tr>
-                                    <td><span>Разрешение экрана (Пикс/дюйм): </span></td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><span>Встроенная память: </span></td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><span>Процессор: </span></td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><span>Фотокамера (МПикс): </span></td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><span>Цвет: </span></td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><span>Операционная система: </span></td>
-                                    <td>1</td>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <td><span>Диагональ экрана (дюйм): </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Разрешение экрана (Пикс/дюйм): </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Встроенная память: </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Процессор: </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Фотокамера (МПикс): </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Цвет: </span></td>-->
+<!--                                    <td>{{stock_data.color}}</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><span>Операционная система: </span></td>-->
+<!--                                    <td>1</td>-->
+<!--                                </tr>-->
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
