@@ -9812,3 +9812,10 @@ Pages - My Account
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.telegram-button .telegram-button-image {
+    margin-top: 50px;
+    height: 70px;
+    width: 70px;
+    display: block;
+}

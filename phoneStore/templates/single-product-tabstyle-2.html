@@ -74,45 +74,23 @@
                             <table>
                                 {% for property in stock_data.properties%}
                                 <tr>
-                                    <td><span>{{property.name}}:</span></td>
+                                    <td style="width: 50%;"><span>{{property.name}}:</span></td>
                                     <td>{{property.value}}</td>
                                 </tr>
-<!--                                <tr>-->
-<!--                                    <td><span>Диагональ экрана (дюйм): </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Разрешение экрана (Пикс/дюйм): </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Встроенная память: </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Процессор: </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Фотокамера (МПикс): </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Цвет: </span></td>-->
-<!--                                    <td>{{stock_data.color}}</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td><span>Операционная система: </span></td>-->
-<!--                                    <td>1</td>-->
-<!--                                </tr>-->
                                 {% endfor %}
                             </table>
                         </div>
                     </div>
+                    <div class="telegram-button">
+                        <form action="https://t.me/iphone_na_dony" method="GET">
+                            <button type="submit">
+                                <img class="telegram-button-image" src="{% static 'assets/images/icons/telegram_icon.png' %}" alt="Заказать товар">
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 <!-- product details description area end -->
                 <!--========================================-->
-
             </div>
         </div>
     </div>
