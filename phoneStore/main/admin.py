@@ -6,8 +6,8 @@ from .models import ProductType, ProductInstance, PropertyType, PropertyInstance
 
 admin.site.register(ProductType)
 admin.site.register(ProductInstance)
-admin.site.register(PropertyType)
-admin.site.register(PropertyInstance)
+# admin.site.register(PropertyType)
+# admin.site.register(PropertyInstance)
 admin.site.register(ImagesInstance)
 # admin.site.register(Stock)
 
@@ -21,6 +21,18 @@ admin.site.register(CartItem)
 class GalleryInline(admin.TabularInline):
     fk_name = 'image_instance_id'
     model = ImagesInstance
+
+
+@admin.register(PropertyType)
+class PropertyTypeAdmin(admin.ModelAdmin):
+    list_display = ('product_type_id', 'name')
+    list_filter = ['product_type_id']
+
+
+@admin.register(PropertyInstance)
+class PropertyInstanceAdmin(admin.ModelAdmin):
+    list_display = ['product_instance_id', 'property_type_id', 'value']
+    list_filter = ['product_instance_id']
 
 
 @admin.register(Stock)
