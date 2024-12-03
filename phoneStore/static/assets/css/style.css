@@ -9827,3 +9827,7 @@ video::-webkit-media-controls {
     width: 70px;
     display: block;
 }
+
+.hero-slide-item {
+    box-shadow: inset 0px 50px 50px #252525;
+}
