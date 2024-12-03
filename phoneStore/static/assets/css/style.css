@@ -9799,6 +9799,14 @@ Pages - My Account
     margin-bottom: 50px;
 }
 
+video::-webkit-media-controls-timeline {
+    display: none;
+}
+
+video::-webkit-media-controls {
+    display: none;
+}
+
 .product-video {
     width: 100%; /* Full width of its parent container */
     max-width: 1100px; /* Set a maximum width */

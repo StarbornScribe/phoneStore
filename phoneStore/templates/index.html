@@ -81,15 +81,15 @@
             </div>
             <div class="col-md-6">
                 <div class="single-banner nth-child-2 mb-30px mb-lm-30px mt-lm-30px ">
-                    <img src="static/assets/images/banner/4.webp" alt="">
+                    <img src="{% static 'assets/images/banner/headphones_banner.webp' %}" style="opacity:0.5;" alt="">
                     <div class="banner-content nth-child-2">
-                        <h3 class="title">Headphones</h3>
-                        <span class="category">From $95.00</span>
-                        <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                        <h3 class="title">Наушники</h3>
+                        <span class="category">От 12 000 рублей</span>
+                        <a href="{% url 'phones_catalog' product_type='headphones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="single-banner nth-child-2">
-                    <img src="static/assets/images/banner/5.webp" alt="">
+                    <img src="{% static 'assets/images/banner/phones_banner.webp' %}" style="opacity:0.7" alt="">
                     <div class="banner-content nth-child-3">
                         <h3 class="title">Телефоны</h3>
                         <span class="category">От 30 000 рублей</span>
@@ -110,12 +110,12 @@
                 <!-- Tab Start -->
                 <div class="tab-slider d-md-flex justify-content-md-between align-items-md-center">
                     <ul class="product-tab-nav nav justify-content-start align-items-center">
-                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#newarrivals">New Arrivals</button>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#newarrivals">Новинки</button>
                         </li>
-                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#toprated">Top Rated</button>
+                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#toprated">Топ продаж</button>
                         </li>
-                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#featured">Featured</button>
-                        </li>
+<!--                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#featured">Featured</button>-->
+<!--                        </li>-->
                     </ul>
                 </div>
                 <!-- Tab End -->
