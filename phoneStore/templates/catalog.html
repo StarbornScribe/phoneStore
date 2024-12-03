@@ -14,6 +14,12 @@
                                 <source src="/media/videos/introducing_iphone_16_concept_trailer.mp4" type="video/mp4">
                             </video>
                         </div>
+                    </div>
+                    <div class="wrapper-inside">
+                        <div class="page-heading-title">
+                            <h1>Каталог</h1>
+                        </div>
+                    </div>
                     <nav class="breadcrumb-catalog" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
@@ -32,12 +38,6 @@
                             </li>
                         </ol>
                     </nav>
-                    </div>
-                    <div class="wrapper-inside">
-                        <div class="page-heading-title">
-                            <h1>iPhone</h1>
-                        </div>
-                    </div>
                 </div>
                  <div class="product-grid">
                     {% for product in filter_catalog %}
@@ -76,7 +76,14 @@
                                                             <div class="content">
                                                                 <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
                                                                 <h5 class="title">
-                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">{{ product_el.product_name }}</a>
+                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">
+                                                                        {{ product_el.product_name }}
+                                                                    </a>
+                                                                    {% for property in product_el.properties%}
+                                                                        {% if property.name == 'Память' %}
+                                                                            {{ property.value }}
+                                                                        {% endif %}
+                                                                    {% endfor %}
                                                                 </h5>
                                                                 <span class="color">
                                                                     <span class="new">Цвет: {{product_el.color}}</span>

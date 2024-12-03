@@ -38,7 +38,7 @@ class PropertyType(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} для {self.product_type_id.name}"
 
 
 class PropertyInstance(models.Model):

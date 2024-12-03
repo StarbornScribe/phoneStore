@@ -170,6 +170,8 @@ def phones_catalog_thrid(request, product_type, product_name=None):
                 image.image.url
                 for image in stock.imagesinstance_set.all()
             ],
+            # TODO: Здесь есть косяк с тем, что если свойства Цвет не будет добавлено для продукта,
+            #  вьюха упадёт с ошибкой
             'color': [prop for prop in stock.property_instances.all() if prop.property_type_id.name == 'Цвет'][0].value
         })
 
@@ -183,7 +185,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
             filter_catalog.append({
                 'type': product_data['product_type'],
                 'name': product_data['product_name'],
-                'image': product_data['images'][0], # Добавляем первое изображение продукта
+                'image': product_data['images'][0] if len(product_data['images']) != 0 else None, # Добавляем первое изображение продукта
                 'slug': product_data['slug']
             })
 
