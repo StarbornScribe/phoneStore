@@ -1,11 +1,9 @@
 import json
-from django.http import JsonResponse
-from django.http import Http404
 from typing import List, Any, Dict
-from django.db.models import QuerySet
+from django.http import JsonResponse
+from django.views.generic import DetailView
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView
 
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
 

@@ -1659,7 +1659,7 @@ body.offcanvas-open {
           align-items: flex-end;
 }
 .hero-slide-image img {
-  max-width: 100%;
+  max-width: 120%;
   -webkit-animation-duration: 1s;
           animation-duration: 1s;
   -webkit-animation-fill-mode: both;
