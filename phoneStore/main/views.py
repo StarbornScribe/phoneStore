@@ -1,11 +1,9 @@
 import json
-from django.http import JsonResponse
-from django.http import Http404
 from typing import List, Any, Dict
-from django.db.models import QuerySet
+from django.http import JsonResponse
+from django.views.generic import DetailView
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView
 
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
 
@@ -93,7 +91,39 @@ def phones_catalog(request, product_type, product_name=None):
 # ---------
 
 
-def phones_catalog_two(request, product_type, product_name=None):
+def product_detail_view(request, slug, stock_id):
+    # Получаем объект ProductInstance по slug
+    product_instance = get_object_or_404(ProductInstance, slug=slug)
+
+    # Получаем конкретную запись Stock по ID
+    stock = get_object_or_404(Stock, id=stock_id, product_instance=product_instance)
+
+    # Подготовка данных для шаблона
+    stock_data = {
+        'quantity': stock.quantity,
+        'price': stock.price,
+        'properties': [
+            {
+                'name': prop.property_type_id.name,
+                'value': prop.value
+            }
+            for prop in stock.property_instances.all()
+        ],
+        'images': [
+            image.image.url
+            for image in stock.imagesinstance_set.all()
+        ]
+    }
+
+    context = {
+        'product': product_instance,
+        'stock_data': stock_data,
+    }
+
+    return render(request, 'single-product-tabstyle-2.html', context)
+
+
+def phones_catalog_thrid(request, product_type, product_name=None):
     # Базовый фильтр по типу продукта
     product_instances = ProductInstance.objects.filter(
         product_type_id__name=product_type
@@ -101,26 +131,71 @@ def phones_catalog_two(request, product_type, product_name=None):
 
     # Если задано имя продукта (slug), фильтруем дополнительно по нему
     if product_name:
-        product_instances = product_instances.filter(slug=product_name)
+        product_instances = product_instances.filter(name=product_name)
 
     # Получаем только те товары, которые есть в наличии
     stocks = Stock.objects.filter(
         product_instance__in=product_instances,  # Привязываем Stock к выбранным ProductInstance
         quantity__gt=0  # Учитываем только товары в наличии
-    ).prefetch_related(
+    ).select_related(
         'product_instance',  # Подтягиваем данные о продукте
-        'property_instances__property_type_id'  # Подтягиваем свойства и их типы
+        'product_instance__product_type_id'  # Подтягиваем данные о типе продукта
+    ).prefetch_related(
+        'property_instances',  # Подтягиваем свойства продукта
+        'property_instances__property_type_id',  # Типы свойств
+        'imagesinstance_set'  # Изображения через связанный ImageInstance
     )
 
-    # Собираем изображения для продуктов
-    image_instances = ImagesInstance.objects.filter(
-        image_instance_id__in=product_instances
-    )
+    # Подготавливаем данные для отображения
+    catalog_data = []
+    for stock in stocks:
+        # Для каждого товара собираем нужную информацию
+        catalog_data.append({
+            'product_name': stock.product_instance.name,
+            'product_type': stock.product_instance.product_type_id.name,
+            'stock_id': stock.id,
+            'slug': stock.product_instance.slug,
+            'quantity': stock.quantity,
+            'price': stock.price,
+            'properties': [
+                {
+                    'name': prop.property_type_id.name,
+                    'value': prop.value
+                }
+                for prop in stock.property_instances.all()
+            ],
+            'images': [
+                image.image.url
+                for image in stock.imagesinstance_set.all()
+            ],
+            # TODO: Здесь есть косяк с тем, что если свойства Цвет не будет добавлено для продукта,
+            #  вьюха упадёт с ошибкой
+            'color': [prop for prop in stock.property_instances.all() if prop.property_type_id.name == 'Цвет'][0].value
+        })
+
+    # Словарь для формирования фильтра продуктов вверху страницы
+    filter_catalog: List[Dict[str, Any]] = []
+    names_list: List[str] = []
+
+    for product_data in catalog_data:
+        if product_data['product_name'] not in names_list:      # Проверка на уникальность
+            names_list.append(product_data['product_name'])     # Добавляем значение product_name в список, чтобы проходила проверка на уникальность
+            filter_catalog.append({
+                'type': product_data['product_type'],
+                'name': product_data['product_name'],
+                'image': product_data['images'][0] if len(product_data['images']) != 0 else None, # Добавляем первое изображение продукта
+                'slug': product_data['slug']
+            })
+
+            # filter_catalog['product_names'].append(product_data['product_name'])
+            # filter_catalog['product_images'].append(product_data['images'][0]) # Добавляем первое изображение продукта
 
     # Формируем контекст для шаблона
     context = {
-        'product_instances': stocks,  # Товары с их количеством и параметрами
-        'image_instances': image_instances,  # Картинки продуктов
+        'filter_catalog': filter_catalog,
+        'catalog_data': catalog_data,  # Передаем готовые данные для отображения
+        'product_type': product_type,  # Передаем тип продукта
+        'product_name': product_name,  # Передаем конкретное имя продукта, если указано
     }
 
     return render(request, 'catalog.html', context)

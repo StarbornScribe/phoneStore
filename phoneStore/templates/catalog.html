@@ -1,40 +1,57 @@
 {% extends "base_template.html" %}
 {% load static %}
+{% load helper_filters %}
 
 {% block content %}
 <!-- Shop Page Start  -->
-        <div class="shop-category-area pt-100px pb-100px">
+<!--        <div class="shop-category-area pt-100px pb-100px">-->
+        <div class="shop-category-area pt-0px pb-100px">
             <div class="container">
                 <div class="page-heading">
                     <div class="wrapper-inside">
                         <div class="page-heading-holder">
-                            <h1>iPhone</h1>
+                            <video class="product-video" controls autoplay muted loop>
+                                <source src="/media/videos/introducing_iphone_16_concept_trailer.mp4" type="video/mp4">
+                            </video>
                         </div>
                     </div>
+                    <div class="wrapper-inside">
+                        <div class="page-heading-title">
+                            <h1>Каталог</h1>
+                        </div>
+                    </div>
+                    <nav class="breadcrumb-catalog" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'home' %}">Главная</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'phones_catalog' product_type=product_type %}">{{ product_type }}</a>
+                            </li>
+                            {% if product_name %}
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'phones_catalog_with_name' product_type=product_type product_name=product_name %}">{{ product_name }}</a>
+                                </li>
+                            {% endif %}
+                            <li class="breadcrumb-item active" aria-current="page">
+                                {{ current_page }}
+                            </li>
+                        </ol>
+                    </nav>
                 </div>
                  <div class="product-grid">
-                    {% for product in product_instances %}
+                    {% for product in filter_catalog %}
                     <div class="product-item">
-                        <a href="phones/{{product.slug}}">
+                        <a href="{% url 'phones_catalog_with_name' product_type=product.type product_name=product.name %}">
                             <div class="product-img">
-                                <img src="{{ product.imagesinstance_set.first.image.url }}" alt="{{ product.name }}">
+                                <img src="{{ product.image }}" alt="{{ product.name }}">
                             </div>
-                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-name">{{product.name}}</div>
                         </a>
                     </div>
                     {% endfor %}
                 </div>
             </div>
-<!--            <div>-->
-<!--                {% for stock in product_instances %}-->
-<!--                <h1>{{ stock.product_instance.name }}</h1>-->
-<!--                        <ul>-->
-<!--                            {% for prop in stock.property_instances.all %}-->
-<!--                                <li>{{ prop.property_type_id.name }}: {{ prop.value }}</li>-->
-<!--                            {% endfor %}-->
-<!--                        </ul>-->
-<!--                {% endfor %}-->
-<!--            </div>-->
             <div class="container">
                 <div class="row">
                     <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
@@ -46,35 +63,33 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="shop-grid">
                                             <div class="row mb-n-30px">
-                                                {% for el in product_instances %}
-<!--                                                Убрал эту проверку, так как во urls мы передаем тип, а во вьюхе ищем объекты исходя из него. Т.е, каталог теперь не только для телефонов-->
-<!--                                                    {% if el.product_type_id.name == 'phones' %}-->
+                                                {% for product_el in catalog_data %}
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
                                                         <!-- Single Product -->
                                                         <div class="product">
-                                                            <span class="badges">10%</span>
+<!--                                                            <span class="badges">10%</span>-->
                                                             <div class="thumb">
-                                                                <a href="{{ el.get_absolute_url }}" class="image">
-                                                                {% with el.imagesinstance_set.all|first as first_image %}
-                                                                    {% if first_image %}
-                                                                        <img src="{{ first_image.image.url }}" alt="Image for {{ el.product_type_id.name }}">
-                                                                    {% else %}
-                                                                        <img src="/path/to/default/image.jpg" alt="Default Image">
-                                                                    {% endif %}
-                                                                {% endwith %}
+                                                                <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">
+                                                                <img src="{{ product_el.images.0}}" alt="Default Image">
                                                                 </a>
                                                             </div>
                                                             <div class="content">
-                                                                <span class="category"><a href="#">Accessories</a></span>
+                                                                <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
                                                                 <h5 class="title">
-                                                                    <a href="{{ el.get_absolute_url }}">{{ el.name }}</a>
-                                                                </h5>
-                                                                <span class="price">
-                                                                    {% for property in el.propertyinstance_set.all %}
-                                                                        {% if property.property_type_id.name == 'Цена' %}
-                                                                            <span class="new">Цена: {{ property.value }} руб.</span>
+                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">
+                                                                        {{ product_el.product_name }}
+                                                                    </a>
+                                                                    {% for property in product_el.properties%}
+                                                                        {% if property.name == 'Память' %}
+                                                                            {{ property.value }}
                                                                         {% endif %}
                                                                     {% endfor %}
+                                                                </h5>
+                                                                <span class="color">
+                                                                    <span class="new">Цвет: {{product_el.color}}</span>
+                                                                </span>
+                                                                <span class="price">
+                                                                    <span class="new">Цена: {{product_el.price}} руб.</span>
                                                                 </span>
                                                             </div>
                                                             <div class="actions">
@@ -93,7 +108,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-<!--                                                    {% endif %}-->
                                                 {% endfor %}
                                             </div>
                                         </div>
