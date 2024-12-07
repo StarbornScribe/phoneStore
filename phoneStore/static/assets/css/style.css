@@ -2475,8 +2475,8 @@ body.offcanvas-open {
     font-size: 16px;
   }
 }
+
 .product .content .price {
-  font-size: 18px;
   font-family: "Poppins", sans-serif;
   line-height: 2;
   font-weight: 500;
@@ -2484,7 +2484,6 @@ body.offcanvas-open {
 }
 
 .product .content .color {
-  font-size: 18px;
   font-family: "Poppins", sans-serif;
   line-height: 2;
   font-weight: 500;
@@ -2514,6 +2513,31 @@ body.offcanvas-open {
   margin-top: -1px;
   right: -15px;
 }
+
+product .content .color:not(:last-child) {
+  margin-bottom: 20px;
+}
+.product .content .color span.new {
+  font-weight: 500;
+}
+.product .content .color span.old {
+  margin-right: 15px;
+  font-weight: 300;
+  text-decoration: line-through;
+  position: relative;
+}
+.product .content .color span.old::after {
+  position: absolute;
+  top: 50%;
+  left: auto;
+  width: 10px;
+  height: 2px;
+  content: "";
+  background-color: #666666;
+  margin-top: -1px;
+  right: -15px;
+}
+
 .product .content .btn {
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
@@ -7357,6 +7381,20 @@ body.offcanvas-open {
   color: #181818;
   font-weight: 300;
 }
+
+.product-anotherinfo-table td {
+    line-height: 10px;
+    font-size: 15px;
+}
+
+.product-anotherinfo-table tr {
+    height: 10px;
+}
+
+.product-anotherinfo-table-value {
+    padding: 10px;
+}
+
 .description-review-bottom .product-anotherinfo-wrapper li {
   color: #3d3d3d;
   font-size: 16px;
