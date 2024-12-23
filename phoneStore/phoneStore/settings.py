@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-6z2tgaqqvzf5ciq%#(js@tfgklzoo&^0*x-l%5uq9yss^e_c#n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['store.dokku.iphoneondon.ru']
+ALLOWED_HOSTS = ['store.dokku.iphoneondon.ru', 'new.iphoneondon.ru', '127.0.0.1']
 
 
 # Application definition
