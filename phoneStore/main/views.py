@@ -129,6 +129,15 @@ def phones_catalog_thrid(request, product_type, product_name=None):
         product_type_id__name=product_type
     )
 
+    # TODO: Как временное решение сделал маппер для типов, чтобы выводить тип на русском языке в хлебных крошках
+    product_type_mapper: Dict[str, str] = {
+        'phones': 'Телефоны',
+        'pads': 'Планшеты',
+        'laptops': 'Ноутбуки',
+        'headphones': 'Наушники',
+        'accessories': 'Аксессуары'
+    }
+
     # Если задано имя продукта (slug), фильтруем дополнительно по нему
     if product_name:
         product_instances = product_instances.filter(name=product_name)
@@ -192,6 +201,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 
     # Формируем контекст для шаблона
     context = {
+        'product_type_name': product_type_mapper[product_type] if product_type in product_type_mapper.keys() else product_type,
         'filter_catalog': filter_catalog,
         'catalog_data': catalog_data,  # Передаем готовые данные для отображения
         'product_type': product_type,  # Передаем тип продукта
