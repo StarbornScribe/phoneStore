@@ -16,10 +16,11 @@ Including another URLconf
 """
 from main import views
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# from main.views import postuser
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
@@ -28,9 +29,13 @@ urlpatterns = [
     # path('phones-catalog/', views.phones_catalog, name='phones_catalog'),
     path('phones-catalog/<str:product_type>', views.phones_catalog_thrid, name='phones_catalog'),
     path('phones-catalog/<str:product_type>/<str:product_name>', views.phones_catalog_thrid, name='phones_catalog_with_name'),
-    path('cart/', views.cart_detail, name='cart_detail'),
-    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
-    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    # path('cart/', views.cart_detail, name='cart_detail'),
+    # path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    # path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('create', views.get_order, name = 'create_order'),
+    path('success', views.send_form_email, name = 'send_form_email')
+    # path('send_form', views.send_form_email, name='send_form'),
+    # path('your-name/', views.get_name, name='your_name')
 ]
 
 if settings.DEBUG:

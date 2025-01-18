@@ -2413,6 +2413,20 @@ body.offcanvas-open {
   display: block;
   overflow: hidden;
 }
+.image-box {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 .product .thumb .image img {
   z-index: 1;
   max-width: 100%;
@@ -2420,6 +2434,7 @@ body.offcanvas-open {
   transition: all 0.3s ease 0s;
   width: 100%;
 }
+
 .product .thumb .image img.hover-image {
   position: absolute;
   z-index: 2;
@@ -9820,11 +9835,17 @@ Pages - My Account
 .product-item {
     width: 150px;
     text-align: center;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 .product-item img {
     width: 70%;
     height: auto;
     border-radius: 8px;
+    object-fit: cover;
 }
 .product-name {
     margin-top: 10px;
@@ -9860,11 +9881,48 @@ video::-webkit-media-controls {
 }
 
 .telegram-button .telegram-button-image {
-    margin-top: 50px;
-    height: 70px;
+    margin-top: 40px;
+    height: 50px;
     display: block;
 }
 
 .hero-slide-item {
     box-shadow: inset 0px 50px 50px #252525;
+}
+
+/* Основные стили для кнопки */
+.button-post {
+    display: block; /* Блоковый элемент для выравнивания */
+    margin: 20px auto 0; /* Центрирование (по горизонтали) и отступ сверху */
+    padding: 10px 20px; /* Внутренние отступы */
+    background-color: #007BFF; /* Синий фон */
+    color: white; /* Белый текст */
+    font-size: 16px; /* Размер текста */
+    border: none; /* Убрать рамку */
+    border-radius: 5px; /* Закруглённые углы */
+    cursor: pointer; /* Указатель при наведении */
+    transition: background-color 0.3s ease; /* Анимация */
+}
+
+/* Стили при наведении мыши */
+.button-post:hover {
+    background-color: #0056b3; /* Более тёмный синий */
+}
+
+/* Если кнопка находится в заблокированном состоянии */
+.button-post:disabled {
+    background-color: #cccccc; /* Серый цвет */
+    cursor: not-allowed; /* Запрет действия */
+
+}
+
+.form-post-only {
+    max-width: 600px; /* Ограничение ширины формы */
+    margin: 0 auto; /* Центрирование формы */
+    padding: 20px; /* Внутренние отступы */
+    background-color: #ffffff; /* Цвет фона (если требуется) */
+    border: 1px solid #ddd; /* Граница вокруг формы */
+    border-radius: 5px; /* Закруглённые углы */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для формы */
+
 }

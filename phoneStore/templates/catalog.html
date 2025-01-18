@@ -71,9 +71,11 @@
                                                         <div class="product">
 <!--                                                            <span class="badges">10%</span>-->
                                                             <div class="thumb">
-                                                                <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">
-                                                                <img src="{{ product_el.images.0}}" alt="Default Image">
-                                                                </a>
+                                                                <div class="image-box">
+                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">
+                                                                        <img src="{{ product_el.images.0}}" alt="Default Image">
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                             <div class="content">
                                                                 <span class="category"><a href="#">{{ product_el.product_type }}</a></span>

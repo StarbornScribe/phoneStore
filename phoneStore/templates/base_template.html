@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Айфон-на-Дону/title>
-    <meta name="robots" content="index, follow" />
+    <title>Айфон-на-Дону</title>
+    <meta name="robots" content="index, follow"/>
     <meta name="description" content="Iphone-on-Don">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/favicon.ico' %}" />
@@ -36,7 +36,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col">
                             <div class="welcome-text">
-                                <p>Делаем ваш мир лучше</p>
+                                <p>Делаем ваш мир лучше...</p>
                             </div>
                         </div>
                         <div class="col d-none d-lg-block">
@@ -321,25 +321,41 @@
                                     <div class="footer-logo">
                                         <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/footer-logo.png' %}" alt="footer-logo" width="100"></a>
                                     </div>
-                                    <p class="about-text">Делаем ваш мир лучше
-                                    </p>
+                                    <h3>Связаться с нами </h3>
+
                                     <ul class="link-follow">
+<!--                                        <li>-->
+<!--                                            <a class="m-0" title="Twitter" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-facebook"-->
+<!--                                                aria-hidden="true"></i></a>-->
+<!--                                        </li>-->
                                         <li>
-                                            <a class="m-0" title="Twitter" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-facebook"
-                                                aria-hidden="true"></i></a>
+<!--                                            <a title="Telegram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-tumblr" aria-hidden="true"></i>-->
+<!--                                            </a>-->
+                                             <div class="telegram-button">
+                                            <form action="https://t.me/iphone_na_dony" method="GET">
+                                            <button type="submit">
+                                                <img class="telegram-button-image" src="{% static 'assets/images/icons/telegram_icon.png' %}" alt="Перейти к нам на канал">
+                                            </button>
+                                            </form>
                                         </li>
                                         <li>
-                                            <a title="Tumblr" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-tumblr" aria-hidden="true"></i>
-                                            </a>
+<!--                                            <a title="Telegram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-tumblr" aria-hidden="true"></i>-->
+<!--                                            </a>-->
+                                             <div class="telegram-button">
+                                            <form action="https://www.instagram.com/iphone_na_dony/profilecard/?igsh=MXI3c2p6Y3VrNWly" method="GET">
+                                            <button type="submit">
+                                                <img class="telegram-button-image" src="{% static 'assets/images/icons/instagram_icon.png' %}" alt="Перейти к нам на канал">
+                                            </button>
+                                            </form>
                                         </li>
-                                        <li>
-                                            <a title="Facebook" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-twitter" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a title="Instagram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-instagram" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <a title="Facebook" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-twitter" aria-hidden="true"></i>-->
+<!--                                            </a>-->
+<!--                                        </li>-->
+<!--                                        <li>-->
+<!--                                            <a title="Instagram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-instagram" aria-hidden="true"></i>-->
+<!--                                            </a>-->
+<!--                                        </li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -348,7 +364,7 @@
                             <!-- Start single blog -->
                             <div class="col-md-6 col-lg-3 col-sm-12">
                                 <div class="single-wedge">
-                                    <h4 class="footer-herading">Наши контакты</h4>
+                                    <h3 class="footer-herading"><b>Наши контакты</b></h3>
                                     <div class="footer-links">
                                         <!-- News letter area -->
                                         <p class="address">Адрес: г. Ростов-на-Дону</p>
