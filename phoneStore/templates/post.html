@@ -7,7 +7,8 @@
     <div class="product-details">
         <img class="product-image" src="{{ product.images.0 }}" alt="{{ product.name }}">
         <div class="product-info">
-            <h3>{{ product.name }}</h3>
+            <h3>{{ product.name }} {{ memory }}</h3>
+            <h3> {{ color }}</h3>
             <p>Цена за единицу: <span id="unit-price">{{ product.price }}</span> руб.</p>
             <div class="quantity-selector">
                 <button type="button" id="decrease-quantity">-</button>
@@ -21,21 +22,23 @@
     <!-- Блок с формой -->
     <div class="order-form">
         <h4>Ваши данные</h4>
-        <form method="POST">
+        <form action="{% url 'send_form_email' %}" method="POST">
             {% csrf_token %}
             <label for="location">Ваше местоположение:</label>
-            <input type="text" id="location" name="location" placeholder="Например, Москва">
+            <input type="text" id="location" name="location" placeholder="Например, Москва" required>
 
             <label for="name">Ваше имя:</label>
-            <input type="text" id="name" name="name" placeholder="Ваше имя">
+            <input type="text" id="name" name="name" placeholder="Ваше имя" required>
 
             <label for="phone">Номер телефона:</label>
-            <input type="tel" id="phone" name="phone" placeholder="Ваш телефон">
+            <input type="tel" id="phone" name="phone" placeholder="Ваш телефон" required>
 
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" placeholder="Ваш e-mail">
+            <input type="email" id="email" name="email" placeholder="Ваш e-mail" required>
 
-            <a href="{% url 'send_form_email' %}"><button type="submit" class="btn-submit">Оформить заказ</button></a>
+
+            <button type="submit" class="btn-submit">Оформить заказ</button>
+
         </form>
     </div>
 </div>

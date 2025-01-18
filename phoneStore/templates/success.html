@@ -1,10 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Success</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container">
+        <div class="success-message">
+            <h1>Спасибо за заказ!</h1>
+            <p>Ваш заказ был успешно отправлен. Мы скоро свяжемся с вами для подтверждения.</p>
+            <p>Если у вас возникнут вопросы, вы можете связаться с нашей службой поддержки.</p>
+
+            <!-- Вы можете добавить ссылку для возврата на главную страницу или в магазин -->
+            <a href="{% url 'home' %}" class="btn btn-back">Вернуться на главную</a>
+        </div>
+    </div>
+
+<style>
+
+.success-message {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+}
+
+.success-message .btn-back {
+    background-color: #266bf9; /* Начальный цвет фона */
+    color: white; /* Цвет текста */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    border: none; /* Убираем стандартную рамку */
+    cursor: pointer; /* Курсор в виде руки */
+    font-size: 16px; /* Размер текста */
+    border-radius: 4px; /* Скругление углов */
+    width: 450px; /* Устанавливаем фиксированную ширину кнопки */
+    margin-top: 20px; /* Отступ сверху от других элементов */
+    transition: background-color 0.3s ease; /* Плавное изменение фона при наведении */
+}
+
+/* Изменение цвета кнопки при наведении */
+.success-message .btn-back:hover {
+    background-color: #266bf9; /* Цвет фона при наведении */
+    color: white; /* Цвет текста при наведении */
+}
+}
+</style>
+{% endblock %}

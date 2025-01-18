@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.mail import send_mail
-# from phoneStore.phoneStore.settings import EMAIL_HOST_USER
+from phoneStore.settings import EMAIL_HOST_USER
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
 from django.http import HttpResponseRedirect
 
@@ -120,7 +120,7 @@ def product_detail_view(request, slug, stock_id):
         ]
     }
 
-    context = {
+    context: Dict = {
         'product': product_instance,
         'stock_data': stock_data,
     }
@@ -324,13 +324,27 @@ def send_form_email(request) -> HttpResponse:
         # # Возвращаем JSON-ответ для обновления на странице
         # return JsonResponse(order_data)
 
-    subject: str = "New form"
-    message: Dict = order_data
-    recipient: str = 'stepnik0@yandex.ru'
+        subject = "Новый заказ"
+        message = f"Заказ на товар: {product['name']}\n" \
+                  f"Количество: {quantity}\n" \
+                  f"Цена за единицу: {unit_price}\n" \
+                  f"Итого: {items_price}\n" \
+                  f"Данные покупателя:\n" \
+                  f"Имя: {user_data['name']}\n" \
+                  f"Телефон: {user_data['phone']}\n" \
+                  f"Email: {user_data['email']}\n" \
+                  f"Местоположение: {user_data['location']}"
 
-    send_mail(subject, 'hello', EMAIL_HOST_USER, recipient)
-    # return HttpResponse('Сообщение успешно отправлено!')
-    return render(request, 'success.html')
+        # Получаем email из данных формы (если нужно)
+        recipient_list = ['stepnik0@yandex.ru']
+
+        # Отправляем письмо
+        send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+
+        # Вернем сообщение об успешной отправке
+        return render(request, 'success.html')
+
+    return render(request, 'post.html')
 
 
 def get_order(request) -> HttpResponse:
@@ -363,10 +377,17 @@ def get_order(request) -> HttpResponse:
     #
     #     #Возвращаем JSON-ответ для обновления на странице
     #     return JsonResponse(order_data)
+    # for prop in product["properties"]:
+    #     if prop['name'] == "Цвет":
+    #         color = prop['value']
 
+    color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
+    memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Память'][0]
 
     context: dict = {
         "product": product,
+        "color": color,
+        "memory": memory_size,
         "quantity": 1,
         "items_price": product['price'],
     }
