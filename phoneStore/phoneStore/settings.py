@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -164,8 +165,9 @@ LOGGING = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 587
+EMAIL_PORT = 465
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'stepnik0@yandex.ru'  # Ваша почта Яндекс
-EMAIL_HOST_PASSWORD = 'cntgybrybrjkfq485'  # Пароль от вашей почты
+EMAIL_HOST_USER = 'stepnik0@yandex.ru' # Ваша почта Яндекс
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = 'dysmwqfrzkktfabk'  # Пароль от вашей почты
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

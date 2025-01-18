@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 # from phoneStore.phoneStore.settings import EMAIL_HOST_USER
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
 from django.http import HttpResponseRedirect
-from .forms import OrderForm
+
 
 
 def bootstrap_page_handler(request):
@@ -324,16 +324,13 @@ def send_form_email(request) -> HttpResponse:
         # # Возвращаем JSON-ответ для обновления на странице
         # return JsonResponse(order_data)
 
-        subject: str = "New form"
-        message: Dict = order_data
-        recipient: str = 'stepnik0@yandex.ru'
+    subject: str = "New form"
+    message: Dict = order_data
+    recipient: str = 'stepnik0@yandex.ru'
 
-        try:
-            send_mail(subject, message, EMAIL_HOST_USER, recipient)
-            return HttpResponse('Сообщение успешно отправлено!')
-        except Exception as e:
-            return HttpResponse(f'Error: {e}')
-    # return render(request, 'success.html')
+    send_mail(subject, 'hello', EMAIL_HOST_USER, recipient)
+    # return HttpResponse('Сообщение успешно отправлено!')
+    return render(request, 'success.html')
 
 
 def get_order(request) -> HttpResponse:
