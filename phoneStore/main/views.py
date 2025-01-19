@@ -296,11 +296,12 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 
 def send_form_email(request) -> HttpResponse:
     product: dict = request.session.get('stock_data')
+    response_status: bool = False
     if request.method == "POST":
         quantity: int = int(request.POST.get('quantity', 1))
         unit_price: int = product['price']
         # Собираем информацию о пользователе
-        user_data: dict = {
+        user_data: Dict[str, str] = {
             'location': request.POST.get('location', '').strip(),
             'name': request.POST.get('name', '').strip(),
             'phone': request.POST.get('phone', '').strip(),
@@ -308,7 +309,7 @@ def send_form_email(request) -> HttpResponse:
         }
 
         # Расчет стоимости
-        items_price: int = unit_price * quantity
+        items_price = unit_price * quantity
 
         # Подготовка данных для ответа
         order_data: Dict[str, dict[str, int] | int | dict] = {
@@ -324,8 +325,8 @@ def send_form_email(request) -> HttpResponse:
         # # Возвращаем JSON-ответ для обновления на странице
         # return JsonResponse(order_data)
 
-        subject = "Новый заказ"
-        message = f"Заказ на товар: {product['name']}\n" \
+        subject: str = "Новый заказ"
+        message: str = f"Заказ на товар: {product['name']}\n" \
                   f"Количество: {quantity}\n" \
                   f"Цена за единицу: {unit_price}\n" \
                   f"Итого: {items_price}\n" \
@@ -336,15 +337,23 @@ def send_form_email(request) -> HttpResponse:
                   f"Местоположение: {user_data['location']}"
 
         # Получаем email из данных формы (если нужно)
-        recipient_list = ['stepnik0@yandex.ru']
+        recipient_list: List[str] = ['stepnik0@yandex.ru']
 
-        # Отправляем письмо
-        send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+        # Отправляем письмо в блоке try/except
+        try:
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+            response_status: bool = True
+        except Exception as e:
+            response_status: bool = False
+        request.session['response_status'] = response_status
+        context: Dict[str, bool] = {
+            "response_status": response_status
+        }
 
         # Вернем сообщение об успешной отправке
-        return render(request, 'success.html')
+        return render(request, 'success.html', context)
 
-    return render(request, 'post.html')
+    # return render(request, 'post.html')
 
 
 def get_order(request) -> HttpResponse:
