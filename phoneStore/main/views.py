@@ -4,8 +4,12 @@ from django.http import JsonResponse
 from django.views.generic import DetailView
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from phoneStore.settings import EMAIL_HOST_USER
 from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
+from django.http import HttpResponseRedirect
+
 
 
 def bootstrap_page_handler(request):
@@ -99,9 +103,10 @@ def product_detail_view(request, slug, stock_id):
     stock = get_object_or_404(Stock, id=stock_id, product_instance=product_instance)
 
     # Подготовка данных для шаблона
-    stock_data = {
+    stock_data: Dict = {
+        'name': product_instance.name,
         'quantity': stock.quantity,
-        'price': stock.price,
+        'price': float(stock.price),
         'properties': [
             {
                 'name': prop.property_type_id.name,
@@ -115,10 +120,11 @@ def product_detail_view(request, slug, stock_id):
         ]
     }
 
-    context = {
+    context: Dict = {
         'product': product_instance,
         'stock_data': stock_data,
     }
+    request.session['stock_data'] = stock_data
 
     return render(request, 'single-product-tabstyle-2.html', context)
 
@@ -207,7 +213,6 @@ def phones_catalog_thrid(request, product_type, product_name=None):
         'product_type': product_type,  # Передаем тип продукта
         'product_name': product_name,  # Передаем конкретное имя продукта, если указано
     }
-
     return render(request, 'catalog.html', context)
 
 
@@ -215,74 +220,185 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 # Корзина
 # -----------
 
-def add_to_cart(request, product_id):
-    """
-    Добавление товара в корзину:
-    """
-    product = get_object_or_404(ProductInstance, id=product_id)
-    quantity = int(request.GET.get('quantity', 1))  # Количество товара (по умолчанию 1)
-
-    # Загружаем корзину из cookies
-    cart = request.cart['cart']
-
-    # Проверяем, есть ли товар уже в корзине
-    for item in cart:
-        if item['product_id'] == product_id:
-            item['quantity'] += quantity
-            break
-    else:
-        cart.append({'product_id': product_id, 'quantity': quantity})
-
-    # Обновляем cookies
-    response = JsonResponse({'message': 'Товар добавлен в корзину'})
-    response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
-
-    return response
-
-
-def remove_from_cart(request, product_id):
-    """
-    Удаление товара из корзины
-    """
-    cart = request.cart['cart']
-    cart = [item for item in cart if item['product_id'] != product_id]
-
-    response = JsonResponse({'message': 'Товар удалён из корзины'})
-    response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
-
-    return response
+# def add_to_cart(request, product_id):
+#     """
+#     Добавление товара в корзину:
+#     """
+#     product = get_object_or_404(ProductInstance, id=product_id)
+#     quantity = int(request.GET.get('quantity', 1))  # Количество товара (по умолчанию 1)
+#
+#     # Загружаем корзину из cookies
+#     cart = request.cart['cart']
+#
+#     # Проверяем, есть ли товар уже в корзине
+#     for item in cart:
+#         if item['product_id'] == product_id:
+#             item['quantity'] += quantity
+#             break
+#     else:
+#         cart.append({'product_id': product_id, 'quantity': quantity})
+#
+#     # Обновляем cookies
+#     response = JsonResponse({'message': 'Товар добавлен в корзину'})
+#     response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
+#
+#     return response
 
 
-def cart_detail(request):
-    """
-    Отображение корзины
-    """
-    cart = request.cart['cart']
+# def remove_from_cart(request, product_id):
+#     """
+#     Удаление товара из корзины
+#     """
+#     cart = request.cart['cart']
+#     cart = [item for item in cart if item['product_id'] != product_id]
+#
+#     response = JsonResponse({'message': 'Товар удалён из корзины'})
+#     response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
+#
+#     return response
 
-    # Получаем товары из базы данных
-    product_ids = [item['product_id'] for item in cart]
-    products = ProductInstance.objects.filter(id__in=product_ids)
 
-    # Собираем данные для отображения
-    cart_items = []
-    total_price = 0
+# def cart_detail(request):
+#     """
+#     Отображение корзины
+#     """
+#     cart = request.cart['cart']
+#
+#     # Получаем товары из базы данных
+#     product_ids = [item['product_id'] for item in cart]
+#     products = ProductInstance.objects.filter(id__in=product_ids)
+#
+#     # Собираем данные для отображения
+#     cart_items = []
+#     total_price = 0
+#
+#     for item in cart:
+#         product = products.get(id=item['product_id'])
+#         price = product.propertyinstance_set.filter(property_type_id__name='Цена').first()
+#         price_value = int(price.value) if price else 0
+#         total_item_price = price_value * item['quantity']
+#
+#         cart_items.append({
+#             'product': product,
+#             'quantity': item['quantity'],
+#             'price': price_value,
+#             'total_price': total_item_price,
+#         })
+#
+#         total_price += total_item_price
+#
+#     return render(request, 'cart_detail.html', {
+#         'cart_items': cart_items,
+#         'total_price': total_price,
+#     })
 
-    for item in cart:
-        product = products.get(id=item['product_id'])
-        price = product.propertyinstance_set.filter(property_type_id__name='Цена').first()
-        price_value = int(price.value) if price else 0
-        total_item_price = price_value * item['quantity']
 
-        cart_items.append({
-            'product': product,
-            'quantity': item['quantity'],
-            'price': price_value,
-            'total_price': total_item_price,
-        })
 
-        total_price += total_item_price
+def send_form_email(request) -> HttpResponse:
+    product: dict = request.session.get('stock_data')
+    response_status: bool = False
+    if request.method == "POST":
+        quantity: int = int(request.POST.get('quantity', 1))
+        unit_price: int = product['price']
+        # Собираем информацию о пользователе
+        user_data: Dict[str, str] = {
+            'location': request.POST.get('location', '').strip(),
+            'name': request.POST.get('name', '').strip(),
+            'phone': request.POST.get('phone', '').strip(),
+            'email': request.POST.get('email', '').strip(),
+        }
 
-    return render(request, 'cart_detail.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-    })
+        # Расчет стоимости
+        items_price = unit_price * quantity
+
+        # Подготовка данных для ответа
+        order_data: Dict[str, dict[str, int] | int | dict] = {
+            'product': {
+                'name': product['name'],
+                'unit_price': unit_price,
+            },
+            'quantity': quantity,
+            'items_price': items_price,
+            'user_data': user_data,
+        }
+
+        # # Возвращаем JSON-ответ для обновления на странице
+        # return JsonResponse(order_data)
+
+        subject: str = "Новый заказ"
+        message: str = f"Заказ на товар: {product['name']}\n" \
+                  f"Количество: {quantity}\n" \
+                  f"Цена за единицу: {unit_price}\n" \
+                  f"Итого: {items_price}\n" \
+                  f"Данные покупателя:\n" \
+                  f"Имя: {user_data['name']}\n" \
+                  f"Телефон: {user_data['phone']}\n" \
+                  f"Email: {user_data['email']}\n" \
+                  f"Местоположение: {user_data['location']}"
+
+        # Получаем email из данных формы (если нужно)
+        recipient_list: List[str] = ['stepnik0@yandex.ru']
+
+        # Отправляем письмо в блоке try/except
+        try:
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+            response_status: bool = True
+        except Exception as e:
+            response_status: bool = False
+        request.session['response_status'] = response_status
+        context: Dict[str, bool] = {
+            "response_status": response_status
+        }
+
+        # Вернем сообщение об успешной отправке
+        return render(request, 'success.html', context)
+
+    # return render(request, 'post.html')
+
+
+def get_order(request) -> HttpResponse:
+    # Получаем данные товара из сессии
+    product: dict = request.session.get('stock_data')
+    # if request.method == "POST":
+    #     quantity: int = int(request.POST.get('quantity', 1))
+    #     unit_price: int = product['price']
+    #     #Собираем информацию о пользователе
+    #     user_data: dict = {
+    #         'location': request.POST.get('location', '').strip(),
+    #         'name': request.POST.get('name', '').strip(),
+    #         'phone': request.POST.get('phone', '').strip(),
+    #         'email': request.POST.get('email', '').strip(),
+    #     }
+    #
+    #     #Расчет стоимости
+    #     items_price: int = unit_price * quantity
+    #
+    #     # Подготовка данных для ответа
+    #     order_data: Dict[str, dict[str, int] | int | dict] = {
+    #         'product': {
+    #             'name': product['name'],
+    #             'unit_price': unit_price,
+    #         },
+    #         'quantity': quantity,
+    #         'items_price': items_price,
+    #         'user_data': user_data,
+    #     }
+    #
+    #     #Возвращаем JSON-ответ для обновления на странице
+    #     return JsonResponse(order_data)
+    # for prop in product["properties"]:
+    #     if prop['name'] == "Цвет":
+    #         color = prop['value']
+
+    color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
+    memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Память'][0]
+
+    context: dict = {
+        "product": product,
+        "color": color,
+        "memory": memory_size,
+        "quantity": 1,
+        "items_price": product['price'],
+    }
+    return render(request, 'post.html', context)
+

@@ -1,0 +1,197 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+<div class="checkout-container">
+    <!-- Блок с товаром -->
+    <div class="product-details">
+        <img class="product-image" src="{{ product.images.0 }}" alt="{{ product.name }}">
+        <div class="product-info">
+            <h3>{{ product.name }} {{ memory }}</h3>
+            <h3> {{ color }}</h3>
+            <p>Цена за единицу: <span id="unit-price">{{ product.price }}</span> руб.</p>
+            <div class="quantity-selector">
+                <button type="button" id="decrease-quantity">-</button>
+                <input type="number" id="quantity" name="quantity" value="{{ quantity }}" min="1">
+                <button type="button" id="increase-quantity">+</button>
+            </div>
+            <p>Общая стоимость: <span id="items-price">{{ product.price }}</span> руб.</p>
+        </div>
+    </div>
+
+    <!-- Блок с формой -->
+    <div class="order-form">
+        <h4>Ваши данные</h4>
+        <form action="{% url 'send_form_email' %}" method="POST">
+            {% csrf_token %}
+            <label for="location">Ваше местоположение:</label>
+            <input type="text" id="location" name="location" placeholder="Например, Москва" required>
+
+            <label for="name">Ваше имя:</label>
+            <input type="text" id="name" name="name" placeholder="Ваше имя" required>
+
+            <label for="phone">Номер телефона:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Ваш телефон" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="Ваш e-mail" required>
+
+
+            <button type="submit" class="btn-submit">Оформить заказ</button>
+
+        </form>
+    </div>
+</div>
+
+<!-- Скрипт для обработки количества и стоимости -->
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const unitPrice = parseFloat(document.getElementById('unit-price').textContent); // Цена за единицу
+        const quantityInput = document.getElementById('quantity'); // Поле количества
+        const decreaseButton = document.getElementById('decrease-quantity'); // Кнопка уменьшения
+        const increaseButton = document.getElementById('increase-quantity'); // Кнопка увеличения
+        const itemsPriceElement = document.getElementById('items-price'); // Поле итоговой стоимости
+
+        function updatePrices() {
+            const quantity = parseInt(quantityInput.value) || 1; // Получаем значение количества
+            const itemsPrice = unitPrice * quantity; // Пересчитываем общую стоимость
+            itemsPriceElement.textContent = itemsPrice.toFixed(2); // Обновляем поле стоимости
+            console.log(quantityInput.value);
+        }
+
+        decreaseButton.addEventListener('click', function () {
+            const currentQuantity = parseInt(quantityInput.value) || 1;
+            if (currentQuantity > 1) {
+                quantityInput.value = currentQuantity - 1; // Обновляем поле ввода
+                updatePrices(); // Пересчитываем цены
+            }
+        });
+
+        increaseButton.addEventListener('click', function () {
+            const currentQuantity = parseInt(quantityInput.value) || 1;
+            quantityInput.value = currentQuantity + 1; // Обновляем поле ввода
+            updatePrices(); // Пересчитываем цены
+        });
+
+        quantityInput.addEventListener('input', updatePrices); // Обновляем при ручном вводе
+    });
+
+</script>
+
+<style>
+/* Стилизация общей структуры */
+.checkout-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Стили для блока товара */
+.product-details {
+    flex: 1;
+    max-width: 50%;
+}
+
+.product-image {
+    width: 250px; /* Устанавливаем фиксированную ширину */
+    height: auto; /* Сохраняем пропорции */
+    border-radius: 8px; /* Округляем углы */
+    margin-bottom: 20px; /* Отступ снизу */
+    object-fit: cover; /* Подгоняем изображение под размеры контейнера */
+}
+
+.product-info h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.quantity-selector button {
+    background-color: #f0f0f0; /* Светлый фон для кнопок */
+    border: 1px solid #ccc; /* Легкая рамка */
+    padding: 5px 10px; /* Отступы */
+    cursor: pointer;
+    font-size: 16px; /* Увеличенный размер текста */
+    border-radius: 4px; /* Округленные углы */
+    color: #333; /* Темный цвет текста */
+}
+
+.quantity-selector button:hover {
+    background-color: #e0e0e0; /* Легкое затемнение при наведении */
+}
+
+.quantity-selector input {
+    width: 60px; /* Достаточная ширина для отображения чисел */
+    text-align: center; /* Центрируем текст */
+    font-size: 16px; /* Увеличенный размер текста */
+    border: 1px solid #ccc; /* Легкая рамка */
+    border-radius: 4px; /* Округленные углы */
+    padding: 5px; /* Отступы внутри */
+    color: #333; /* Темный цвет текста */
+    background-color: #fff; /* Белый фон */
+}
+
+/* Стили для блока формы */
+.order-form {
+    flex: 1;
+    max-width: 40%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.order-form h4 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.order-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.order-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.order-form .btn-submit {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.order-form .btn-submit:hover {
+    background-color: darkred;
+}
+
+/* Общий стиль для текста */
+p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+</style>
+
+{% endblock %}

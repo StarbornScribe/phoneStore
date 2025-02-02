@@ -81,18 +81,24 @@
                             </table>
                         </div>
                     </div>
-                    <div class="telegram-button">
-                        <form action="https://t.me/iphone_na_dony" method="GET">
-                            <button type="submit">
-                                <img class="telegram-button-image" src="{% static 'assets/images/icons/telegram_icon.png' %}" alt="Заказать товар">
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                    <br>
+<!--                    <div class="telegram-button">-->
+<!--                        <form action="https://t.me/iphone_na_dony" method="GET">-->
+<!--                            <button type="submit">-->
+<!--                                <img class="telegram-button-image" src="{% static 'assets/images/icons/telegram_icon.png' %}" alt="Перейти к нам на канал">-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+                         <div>
+                            <a href="{% url 'create_order' %}"><button class="button-post">Заказать</button></a>
+                         </div>
+
                 <!-- product details description area end -->
                 <!--========================================-->
-            </div>
+
         </div>
     </div>
 </div>
+
 {% endblock %}
