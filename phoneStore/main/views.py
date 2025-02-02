@@ -103,7 +103,7 @@ def product_detail_view(request, slug, stock_id):
     stock = get_object_or_404(Stock, id=stock_id, product_instance=product_instance)
 
     # Подготовка данных для шаблона
-    stock_data: Dict = {
+    stock_data: Dict[str, Any] = {
         'name': product_instance.name,
         'quantity': stock.quantity,
         'price': float(stock.price),
@@ -295,7 +295,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 
 
 def send_form_email(request) -> HttpResponse:
-    product: dict = request.session.get('stock_data')
+    product: Dict[str, Any] = request.session.get('stock_data')
     response_status: bool = False
     if request.method == "POST":
         quantity: int = int(request.POST.get('quantity', 1))
@@ -337,8 +337,7 @@ def send_form_email(request) -> HttpResponse:
                   f"Местоположение: {user_data['location']}"
 
         # Получаем email из данных формы (если нужно)
-        recipient_list: List[str] = ['stepnik0@yandex.ru']
-
+        recipient_list: List[str] = [EMAIL_HOST_USER]
         # Отправляем письмо в блоке try/except
         try:
             send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
@@ -393,7 +392,7 @@ def get_order(request) -> HttpResponse:
     color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
     memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Память'][0]
 
-    context: dict = {
+    context: Dict[str, Any] = {
         "product": product,
         "color": color,
         "memory": memory_size,
