@@ -1,5 +1,5 @@
 import json
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Optional
 from django.http import JsonResponse
 from django.views.generic import DetailView
 from django.shortcuts import render
@@ -296,7 +296,7 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 
 def send_form_email(request) -> HttpResponse:
     product: Dict[str, Any] = request.session.get('stock_data')
-    response_status: bool = False
+
     if request.method == "POST":
         quantity: int = int(request.POST.get('quantity', 1))
         unit_price: int = product['price']
@@ -311,20 +311,7 @@ def send_form_email(request) -> HttpResponse:
         # Расчет стоимости
         items_price = unit_price * quantity
 
-        # Подготовка данных для ответа
-        order_data: Dict[str, dict[str, int] | int | dict] = {
-            'product': {
-                'name': product['name'],
-                'unit_price': unit_price,
-            },
-            'quantity': quantity,
-            'items_price': items_price,
-            'user_data': user_data,
-        }
-
         # # Возвращаем JSON-ответ для обновления на странице
-        # return JsonResponse(order_data)
-
         subject: str = "Новый заказ"
         message: str = f"Заказ на товар: {product['name']}\n" \
                   f"Количество: {quantity}\n" \
@@ -338,12 +325,15 @@ def send_form_email(request) -> HttpResponse:
 
         # Получаем email из данных формы (если нужно)
         recipient_list: List[str] = [EMAIL_HOST_USER]
+
+        response_status: bool = False
         # Отправляем письмо в блоке try/except
         try:
             send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
-            response_status: bool = True
-        except Exception as e:
-            response_status: bool = False
+            response_status = True
+        except Exception('Произошла ошибка отправки пиьсма. Обратитесь в поддержку') as e:
+            exception_text: str = e
+
         request.session['response_status'] = response_status
         context: Dict[str, bool] = {
             "response_status": response_status
@@ -352,45 +342,13 @@ def send_form_email(request) -> HttpResponse:
         # Вернем сообщение об успешной отправке
         return render(request, 'success.html', context)
 
-    # return render(request, 'post.html')
-
 
 def get_order(request) -> HttpResponse:
     # Получаем данные товара из сессии
     product: dict = request.session.get('stock_data')
-    # if request.method == "POST":
-    #     quantity: int = int(request.POST.get('quantity', 1))
-    #     unit_price: int = product['price']
-    #     #Собираем информацию о пользователе
-    #     user_data: dict = {
-    #         'location': request.POST.get('location', '').strip(),
-    #         'name': request.POST.get('name', '').strip(),
-    #         'phone': request.POST.get('phone', '').strip(),
-    #         'email': request.POST.get('email', '').strip(),
-    #     }
-    #
-    #     #Расчет стоимости
-    #     items_price: int = unit_price * quantity
-    #
-    #     # Подготовка данных для ответа
-    #     order_data: Dict[str, dict[str, int] | int | dict] = {
-    #         'product': {
-    #             'name': product['name'],
-    #             'unit_price': unit_price,
-    #         },
-    #         'quantity': quantity,
-    #         'items_price': items_price,
-    #         'user_data': user_data,
-    #     }
-    #
-    #     #Возвращаем JSON-ответ для обновления на странице
-    #     return JsonResponse(order_data)
-    # for prop in product["properties"]:
-    #     if prop['name'] == "Цвет":
-    #         color = prop['value']
 
     color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
-    memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Память'][0]
+    memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Встроенная память'][0]
 
     context: Dict[str, Any] = {
         "product": product,
