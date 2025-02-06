@@ -67,12 +67,13 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="single-banner nth-child-1">
-                    <img src="{% static 'assets/images/banner/watches_banner.png' %}" alt="">
+                    <img src="{% static 'assets/images/banner/watches_banner_new.png' %}" alt="">
                     <div class="banner-content nth-child-1">
-                        <h3 class="title">Смарт-часы <br>
-                        для ваших рук</h3>
-                        <span class="category">От 10000 рублей</span>
-                        <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                        <h3 class="title">Watches<br>
+                        </h3>
+<!--                        <span class="category">От 10000 рублей</span>-->
+                        <a href="{% url 'phones_catalog' product_type='watches' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+<!--                        <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>-->
                     </div>
                 </div>
             </div>
@@ -80,16 +81,16 @@
                 <div class="single-banner nth-child-2 mb-30px mb-lm-30px mt-lm-30px ">
                     <img src="{% static 'assets/images/banner/head-phones-banner.png' %}" style="opacity:0.5;" alt="">
                     <div class="banner-content nth-child-2">
-                        <h3 class="title">Наушники</h3>
-                        <span class="category">От 12 000 рублей</span>
+                        <h3 class="title">Airpods</h3>
+<!--                        <span class="category">От 12 000 рублей</span>-->
                         <a href="{% url 'phones_catalog' product_type='headphones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="single-banner nth-child-2">
                     <img src="{% static 'assets/images/banner/phones-banner.png' %}" style="opacity:0.7" alt="">
                     <div class="banner-content nth-child-3">
-                        <h3 class="title">Телефоны</h3>
-                        <span class="category">От 30 000 рублей</span>
+                        <h3 class="title">iPhones</h3>
+<!--                        <span class="category">От 30 000 рублей</span>-->
                         <a href="{% url 'phones_catalog' 'phones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                     </div>
                 </div>

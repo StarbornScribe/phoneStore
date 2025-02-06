@@ -8,7 +8,7 @@
         <img class="product-image" src="{{ product.images.0 }}" alt="{{ product.name }}">
         <div class="product-info">
             <h3>{{ product.name }} {{ memory }}</h3>
-            <h3> {{ color }}</h3>
+            <h3>{{ color }}</h3>
             <p>Цена за единицу: <span id="unit-price">{{ product.price }}</span> руб.</p>
             <div class="quantity-selector">
                 <button type="button" id="decrease-quantity">-</button>
@@ -25,7 +25,7 @@
         <form action="{% url 'send_form_email' %}" method="POST">
             {% csrf_token %}
             <label for="location">Ваше местоположение:</label>
-            <input type="text" id="location" name="location" placeholder="Например, Москва" required>
+            <input type="text" id="location" name="location" placeholder="Например, Ростов-на-Дону" required>
 
             <label for="name">Ваше имя:</label>
             <input type="text" id="name" name="name" placeholder="Ваше имя" required>
@@ -36,130 +36,104 @@
             <label for="email">E-mail:</label>
             <input type="email" id="email" name="email" placeholder="Ваш e-mail" required>
 
-
             <button type="submit" class="btn-submit">Оформить заказ</button>
-
         </form>
     </div>
 </div>
 
 <!-- Скрипт для обработки количества и стоимости -->
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        const unitPrice = parseFloat(document.getElementById('unit-price').textContent); // Цена за единицу
-        const quantityInput = document.getElementById('quantity'); // Поле количества
-        const decreaseButton = document.getElementById('decrease-quantity'); // Кнопка уменьшения
-        const increaseButton = document.getElementById('increase-quantity'); // Кнопка увеличения
-        const itemsPriceElement = document.getElementById('items-price'); // Поле итоговой стоимости
+document.addEventListener('DOMContentLoaded', function () {
+    const unitPrice = parseFloat(document.getElementById('unit-price').textContent);
+    const quantityInput = document.getElementById('quantity');
+    const decreaseButton = document.getElementById('decrease-quantity');
+    const increaseButton = document.getElementById('increase-quantity');
+    const itemsPriceElement = document.getElementById('items-price');
 
-        function updatePrices() {
-            const quantity = parseInt(quantityInput.value) || 1; // Получаем значение количества
-            const itemsPrice = unitPrice * quantity; // Пересчитываем общую стоимость
-            itemsPriceElement.textContent = itemsPrice.toFixed(2); // Обновляем поле стоимости
-            console.log(quantityInput.value);
+    function updatePrices() {
+        const quantity = parseInt(quantityInput.value) || 1;
+        const itemsPrice = unitPrice * quantity;
+        itemsPriceElement.textContent = itemsPrice.toFixed(2);
+    }
+
+    decreaseButton.addEventListener('click', function () {
+        if (parseInt(quantityInput.value) > 1) {
+            quantityInput.value--;
+            updatePrices();
         }
-
-        decreaseButton.addEventListener('click', function () {
-            const currentQuantity = parseInt(quantityInput.value) || 1;
-            if (currentQuantity > 1) {
-                quantityInput.value = currentQuantity - 1; // Обновляем поле ввода
-                updatePrices(); // Пересчитываем цены
-            }
-        });
-
-        increaseButton.addEventListener('click', function () {
-            const currentQuantity = parseInt(quantityInput.value) || 1;
-            quantityInput.value = currentQuantity + 1; // Обновляем поле ввода
-            updatePrices(); // Пересчитываем цены
-        });
-
-        quantityInput.addEventListener('input', updatePrices); // Обновляем при ручном вводе
     });
 
+    increaseButton.addEventListener('click', function () {
+        quantityInput.value++;
+        updatePrices();
+    });
+
+    quantityInput.addEventListener('input', updatePrices);
+});
 </script>
 
 <style>
-/* Стилизация общей структуры */
 .checkout-container {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    max-width: 1200px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
 }
 
-/* Стили для блока товара */
 .product-details {
-    flex: 1;
-    max-width: 50%;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .product-image {
-    width: 250px; /* Устанавливаем фиксированную ширину */
-    height: auto; /* Сохраняем пропорции */
-    border-radius: 8px; /* Округляем углы */
-    margin-bottom: 20px; /* Отступ снизу */
-    object-fit: cover; /* Подгоняем изображение под размеры контейнера */
-}
-
-.product-info h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
+    width: 250px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    object-fit: cover;
 }
 
 .quantity-selector {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
 }
 
 .quantity-selector button {
-    background-color: #f0f0f0; /* Светлый фон для кнопок */
-    border: 1px solid #ccc; /* Легкая рамка */
-    padding: 5px 10px; /* Отступы */
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
     cursor: pointer;
-    font-size: 16px; /* Увеличенный размер текста */
-    border-radius: 4px; /* Округленные углы */
-    color: #333; /* Темный цвет текста */
+    font-size: 16px;
+    border-radius: 4px;
+    color: #333;
 }
 
 .quantity-selector button:hover {
-    background-color: #e0e0e0; /* Легкое затемнение при наведении */
+    background-color: #e0e0e0;
 }
 
 .quantity-selector input {
-    width: 60px; /* Достаточная ширина для отображения чисел */
-    text-align: center; /* Центрируем текст */
-    font-size: 16px; /* Увеличенный размер текста */
-    border: 1px solid #ccc; /* Легкая рамка */
-    border-radius: 4px; /* Округленные углы */
-    padding: 5px; /* Отступы внутри */
-    color: #333; /* Темный цвет текста */
-    background-color: #fff; /* Белый фон */
+    width: 60px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
 }
 
-/* Стили для блока формы */
 .order-form {
-    flex: 1;
-    max-width: 40%;
+    width: 100%;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
-}
-
-.order-form h4 {
-    font-size: 20px;
-    margin-bottom: 15px;
-}
-
-.order-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
 }
 
 .order-form input {
@@ -184,13 +158,6 @@
 
 .order-form .btn-submit:hover {
     background-color: darkred;
-}
-
-/* Общий стиль для текста */
-p {
-    font-size: 16px;
-    line-height: 1.5;
-    margin-bottom: 10px;
 }
 </style>
 

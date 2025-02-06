@@ -104,6 +104,7 @@ def product_detail_view(request, slug, stock_id):
 
     # Подготовка данных для шаблона
     stock_data: Dict[str, Any] = {
+        'product_type': str(product_instance.product_type_id),
         'name': product_instance.name,
         'quantity': stock.quantity,
         'price': float(stock.price),
@@ -345,17 +346,22 @@ def send_form_email(request) -> HttpResponse:
 
 def get_order(request) -> HttpResponse:
     # Получаем данные товара из сессии
-    product: dict = request.session.get('stock_data')
+    product: Dict[str, Any] = request.session.get('stock_data')
 
     color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
-    memory_size = [prop['value'] for prop in product['properties'] if prop['name']=='Встроенная память'][0]
 
     context: Dict[str, Any] = {
         "product": product,
         "color": color,
-        "memory": memory_size,
+        "memory": None,
         "quantity": 1,
         "items_price": product['price'],
     }
+    if product['product_type'] == 'headphones' or product['product_type'] == 'accessories':
+        context['memory'] = ''
+    else:
+        memory_size = [prop['value'] for prop in product['properties'] if prop['name'] == 'Встроенная память'][0]
+        context['memory'] = memory_size
+
     return render(request, 'post.html', context)
 
