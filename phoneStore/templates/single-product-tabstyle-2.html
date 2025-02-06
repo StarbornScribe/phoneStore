@@ -8,33 +8,53 @@
         <div class="row">
             <div class="col-lg-5 col-sm-12 col-xs-12 mb-lm-30px mb-md-30px mb-sm-30px">
                 <div class="product-details-img product-details-tab product-details-tab-2 d-flex">
-                    <div class="swiper-container mr-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">
-                        <div class="swiper-wrapper">
-                            {% for image in stock_data.images %}
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{{ image }}" alt="">
+                    <div class="product-slider">
+                        <!-- Main slider -->
+                        <div class="swiper-container main-slider">
+                            <div class="swiper-wrapper">
+                                {% for image in stock_data.images %}
+                                <div class="swiper-slide"><img src="{{ image }}" alt="Image"></div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
-                        <!-- Add Arrows -->
-                        <!-- <div class="swiper-buttons">
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-button-prev"></div>
-                    </div> -->
+
+                        <!-- Thumbnails -->
+                        <div class="swiper-container swiper-thumbnails">
+                            <div class="swiper-wrapper">
+                                {% for image in stock_data.images %}
+                                <div class="swiper-slide"><img src="{{ image }}" alt="Thumbnail"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
+
+<!--                    <div class="swiper-container mr-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">-->
+<!--                        <div class="swiper-wrapper">-->
+<!--                            {% for image in stock_data.images %}-->
+<!--                            <div class="swiper-slide">-->
+<!--                                <img class="img-responsive m-auto" src="{{ image }}" alt="">-->
+<!--                            </div>-->
+<!--                            {% endfor %}-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; Add Arrows &ndash;&gt;-->
+<!--                        &lt;!&ndash; <div class="swiper-buttons">-->
+<!--                        <div class="swiper-button-next"></div>-->
+<!--                        <div class="swiper-button-prev"></div>-->
+<!--                    </div> &ndash;&gt;-->
+<!--                    </div>-->
                     <!-- Swiper -->
-                    <div class="swiper-container zoom-top-2 align-self-start">
-                        <div class="swiper-wrapper">
-                            {% for image in stock_data.images %}
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{{ image }}" alt="">
-                                <a class="venobox full-preview" data-gall="myGallery" href="{{ image }}">
-                                    <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
+<!--                    <div class="swiper-container zoom-top-2 align-self-start">-->
+<!--                        <div class="swiper-wrapper">-->
+<!--                            {% for image in stock_data.images %}-->
+<!--                            <div class="swiper-slide">-->
+<!--                                <img class="img-responsive m-auto" src="{{ image }}" alt="">-->
+<!--                                <a class="venobox full-preview" data-gall="myGallery" href="{{ image }}">-->
+<!--                                    <i class="fa fa-arrows-alt" aria-hidden="true"></i>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            {% endfor %}-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
             <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
@@ -45,9 +65,7 @@
                             <li class="new-price">{{stock_data.price}} рублей</li>
                         </ul>
                     </div>
-
 <!--                            Кнопки добавления в корзину-->
-
 <!--                            <div class="pro-details-quality">-->
 <!--                                <div class="cart-plus-minus">-->
 <!--                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />-->
