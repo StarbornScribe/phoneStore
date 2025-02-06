@@ -63,54 +63,76 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="tab-content">
-                                        <div class="tab-pane fade show active" id="shop-grid">
+                                        <div class="tab-pane active" id="shop-grid">
                                             <div class="row mb-n-30px">
                                                 {% for product_el in catalog_data %}
                                                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px">
-                                                        <!-- Single Product -->
-                                                        <div class="product">
-<!--                                                            <span class="badges">10%</span>-->
-                                                            <div class="thumb">
-                                                                <div class="image-box">
-                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">
-                                                                        <img src="{{ product_el.images.0}}" alt="Default Image">
-                                                                    </a>
+                                                        <div class="card shadow-sm border h-100" style="max-width: 25rem; padding: 1rem;">
+                                                            <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="text-decoration-none text-dark d-flex flex-column h-100">
+                                                                <div class="border rounded p-2" style="background-color: #ffffff;">
+                                                                    <img src="{{ product_el.images.0}}" alt="Смартфон" class="card-img-top">
                                                                 </div>
-                                                            </div>
-                                                            <div class="content">
-                                                                <span class="category"><a href="#">{{ product_el.product_type }}</a></span>
-                                                                <h5 class="title">
-                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">
-                                                                        {{ product_el.product_name }}
-                                                                    </a>
-                                                                    {% for property in product_el.properties%}
-                                                                        {% if property.name == 'Память' %}
-                                                                            {{ property.value }}
-                                                                        {% endif %}
-                                                                    {% endfor %}
-                                                                </h5>
-                                                                <span class="color">
-                                                                    <span class="new">Цвет: {{product_el.color}}</span>
-                                                                </span>
-                                                                <span class="price">
-                                                                    <span class="new">Цена: {{product_el.price}} руб.</span>
-                                                                </span>
-                                                            </div>
-                                                            <div class="actions">
-                                                                <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart">
-                                                                    <i class="pe-7s-shopbag"></i>
-                                                                </button>
-                                                                <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist">
-                                                                    <i class="pe-7s-like"></i>
-                                                                </button>
-                                                                <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                                    <i class="pe-7s-look"></i>
-                                                                </button>
-                                                                <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare">
-                                                                    <i class="pe-7s-refresh-2"></i>
-                                                                </button>
-                                                            </div>
+                                                                <div class="card-body d-flex flex-column justify-content-between">
+                                                                    <div>
+                                                                        <h3 class="card-title">{{ product_el.product_name }}
+                                                                            {% for property in product_el.properties%}
+                                                                                {% if property.name == 'Встроенная память' %}
+                                                                                    {{ property.value }}
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </h3>
+                                                                        <p class="text-dark mb-1"><b>Цвет: </b> {{product_el.color}}</p>
+                                                                        <p class="text-dark"><b>Цена:</b> <span class="fst-normal">{{product_el.price}} руб.</span></p>
+                                                                    </div>
+                                                                    <button class="button-post">Подробнее</button>
+                                                                </div>
+                                                            </a>
                                                         </div>
+
+                                                        <!-- Single Product -->
+<!--                                                        <div class="product">-->
+<!--                                                            <div class="thumb">-->
+<!--                                                                <div class="image-box">-->
+<!--                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}" class="image">-->
+<!--                                                                        <img src="{{ product_el.images.0}}" alt="Default Image">-->
+<!--                                                                    </a>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="content">-->
+<!--                                                                <span class="category"><a href="#">{{ product_el.product_type }}</a></span>-->
+<!--                                                                <h5 class="title">-->
+<!--                                                                    <a href="{% url 'product-detail' slug=product_el.slug stock_id=product_el.stock_id %}">-->
+<!--                                                                        {{ product_el.product_name }}-->
+<!--                                                                    </a>-->
+<!--                                                                    {% for property in product_el.properties%}-->
+<!--                                                                        {% if property.name == 'Память' %}-->
+<!--                                                                            {{ property.value }}-->
+<!--                                                                        {% endif %}-->
+<!--                                                                    {% endfor %}-->
+<!--                                                                </h5>-->
+<!--                                                                <span class="color">-->
+<!--                                                                    <span class="new">Цвет: {{product_el.color}}</span>-->
+<!--                                                                </span>-->
+<!--                                                                <span class="price">-->
+<!--                                                                    <span class="new">Цена: {{product_el.price}} руб.</span>-->
+<!--                                                                </span>-->
+<!--                                                                <button class="btn btn-primary w-100 mt-3">Подробнее</button>-->
+<!--                                                            </div>-->
+<!--&lt;!&ndash;                                                            <div class="actions">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                    <i class="pe-7s-shopbag"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                    <i class="pe-7s-like"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                    <i class="pe-7s-look"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                    <i class="pe-7s-refresh-2"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            </div>&ndash;&gt;-->
+<!--                                                        </div>-->
                                                     </div>
                                                 {% endfor %}
                                             </div>
