@@ -3,6 +3,8 @@ __pycache__/
 
 phoneStore/phoneStore/__init__.py
 phoneStore/main/migrations/__init__.py
+db.sqlite3
+phoneStore/main/migrations/
 
 *.py[cod]
 *$py.class
