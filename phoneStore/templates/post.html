@@ -9,13 +9,13 @@
         <div class="product-info">
             <h3>{{ product.name }} {{ memory }}</h3>
             <h3>{{ color }}</h3>
-            <p>Цена за единицу: <span id="unit-price">{{ product.price }}</span> руб.</p>
+            <p>Цена за единицу: <span id="unit-price">{{ product.price }}</span> ₽</p>
             <div class="quantity-selector">
                 <button type="button" id="decrease-quantity">-</button>
                 <input type="number" id="quantity" name="quantity" value="{{ quantity }}" min="1">
                 <button type="button" id="increase-quantity">+</button>
             </div>
-            <p>Общая стоимость: <span id="items-price">{{ product.price }}</span> руб.</p>
+            <p>Общая стоимость: <span id="items-price">{{ product.price }}</span> ₽</p>
         </div>
     </div>
 

@@ -206,13 +206,6 @@
         <!-- OffCanvas Menu Start -->
         <div id="offcanvas-mobile-menu" class="offcanvas offcanvas-mobile-menu">
             <button class="offcanvas-close"></button>
-            <div class="user-panel">
-                <ul>
-                    <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +012 3456 789</a></li>
-                    <li><a href="mailto:demo@example.com"><i class="fa fa-envelope-o"></i> demo@example.com</a></li>
-                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>
-                </ul>
-            </div>
             <div class="inner customScroll">
                 <div class="offcanvas-menu mb-4">
                     <ul>
@@ -221,6 +214,7 @@
                         <li><a href="{% url 'phones_catalog' product_type='laptops' %}"><span class="menu-text">Mac</span></a></li>
                         <li><a href="{% url 'phones_catalog' product_type='headphones' %}"><span class="menu-text">Air Pods</span></a></li>
                         <li><a href="{% url 'phones_catalog' product_type='accessories' %}"><span class="menu-text">Аксессуары</span></a></li>
+<!--                        <li><a href="contact.html">Контакты</a></li>-->
                     </ul>
                 </div>
                 <!-- OffCanvas Menu End -->
@@ -228,19 +222,13 @@
                 <div class="offcanvas-social mt-auto">
                     <ul>
                         <li>
-                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="https://www.instagram.com/iphone_na_dony/"><i class="fa fa-instagram"></i></a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="https://t.me/iphone_na_dony"><i class="fa fa-telegram"></i></a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-google"></i></a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-youtube"></i></a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="https://wa.me/89880878780"><i class="fa fa-whatsapp"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -274,8 +262,9 @@
                 <p>🌆 г. Ростов-на-Дону, ул. Красноармейская улица 87А</p>
                 <p>📞 <a href="tel:+79880878780">+7 (988) 087-87-80</a></p>
                 <p>📧 <a href="iphoneondon.ru">iphoneondon.ru</a></p>
-                 <a href="https://t.me/iphone_na_dony" target="_blank"><img src="{% static 'assets/images/icons/telegram_icon_new.png' %}" alt="Telegram"></a>
+                <a href="https://t.me/iphone_na_dony" target="_blank"><img src="{% static 'assets/images/icons/telegram_icon_new.png' %}" alt="Telegram"></a>
                 <a href="https://www.instagram.com/iphone_na_dony/" target="_blank"><img src="{% static 'assets/images/icons/instagram_icon_new.png' %}" alt="Instagram"></a>
+                <a href="https://wa.me/89880878780" target="_blank"><img src="{% static 'assets/images/icons/whatsapp_icon.png' %}" alt="Whatsapp"></a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -538,6 +527,7 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="{% static 'assets/js/main.js' %}"></script>
+
 
 </body>
 </html>
