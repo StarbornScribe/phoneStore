@@ -347,6 +347,38 @@
     });
 
     /*---------------------------
+        Product Details Slider 2
+    ------------------------------ */
+    // Initialize the main slider
+    const mainSlider = new Swiper('.main-slider', {
+        loop: true,
+        spaceBetween: 10,
+    });
+
+    // Initialize the thumbnail slider
+    const thumbnailSlider = new Swiper('.swiper-thumbnails', {
+        loop: false, // Disable looping for thumbnail slider
+        spaceBetween: 10,
+        slidesPerView: 4,
+        watchSlidesProgress: true,
+        watchSlidesVisibility: true,
+    });
+
+    // Sync the thumbnail slider to the main slider without controlling each other
+    mainSlider.on('slideChange', function() {
+        const activeIndex = mainSlider.realIndex; // Get the real index of the main slider
+        thumbnailSlider.slideTo(activeIndex); // Move the thumbnail slider to the corresponding slide
+    });
+
+    // Add click event on thumbnail to change the main slider to the clicked thumbnail
+    const thumbnailSlides = document.querySelectorAll('.swiper-thumbnails .swiper-slide');
+    thumbnailSlides.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', () => {
+            mainSlider.slideToLoop(index); // Slide to the corresponding slide in main slider with correct index
+        });
+    });
+
+    /*---------------------------
         Quick view Slider 
     ------------------------------ */
     var galleryThumb = new Swiper('.gallery-thumbs', {
