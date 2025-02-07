@@ -9926,3 +9926,43 @@ video::-webkit-media-controls {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для формы */
 
 }
+
+/* Новый слайдер */
+.product-slider {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.swiper-container {
+    width: 100%;
+    height: auto;
+}
+
+.product-slider .swiper-slide img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.swiper-thumbnails {
+    margin-top: 10px;
+}
+
+.swiper-thumbnails .swiper-slide {
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: opacity 0.3s, border-color 0.3s;
+}
+
+.swiper-thumbnails .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: #266bf9;
+}
+
+.swiper-thumbnails .swiper-slide img {
+    border-radius: 8px;
+}
