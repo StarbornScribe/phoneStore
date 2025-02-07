@@ -44,7 +44,6 @@
                                 <ul>
                                     <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +7 988 087 87 80</a></li>
                                     <li><a href="iphoneondon.ru"><i class="fa fa-envelope-o"></i> iphoneondon.ru</a></li>
-<!--                                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>-->
                                 </ul>
                             </div>
                         </div>
@@ -62,35 +61,6 @@
                                 <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
                             </div>
                         </div>
-
-                        <!-- Строка поиска -->
-<!--                        <div class="col-lg-6 d-none d-lg-block">-->
-<!--                            <div class="search-element">-->
-<!--                                <form action="#">-->
-<!--                                    <input type="text" placeholder="Search" />-->
-<!--                                    <button><i class="pe-7s-search"></i></button>-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-                        <!-- Иконки корзины и избранных -->
-<!--                        <div class="col-lg-3 col">-->
-<!--                            <div class="header-actions">-->
-<!--                                &lt;!&ndash; Single Wedge Start &ndash;&gt;-->
-<!--                                <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">-->
-<!--                                    <i class="pe-7s-like"></i>-->
-<!--                                </a>-->
-<!--                                &lt;!&ndash; Single Wedge End &ndash;&gt;-->
-<!--                                <a href="#offcanvas-cart" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">-->
-<!--                                    <i class="pe-7s-shopbag"></i>-->
-<!--                                    <span class="header-action-num">01</span>-->
-<!--                                    &lt;!&ndash; <span class="cart-amount">€30.00</span> &ndash;&gt;-->
-<!--                                </a>-->
-<!--                                <a href="#offcanvas-mobile-menu" class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">-->
-<!--                                    <i class="pe-7s-menu"></i>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -102,29 +72,11 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="index.html"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
+                                <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
                             </div>
                         </div>
-<!--                        <div class="col-lg-6 d-none d-lg-block">-->
-<!--                            <div class="search-element">-->
-<!--                                <form action="#">-->
-<!--                                    <input type="text" placeholder="Поиск" />-->
-<!--                                    <button><i class="pe-7s-search"></i></button>-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="col-lg-3 col">
                             <div class="header-actions">
-                                <!-- Single Wedge Start -->
-<!--                                <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">-->
-<!--                                    <i class="pe-7s-like"></i>-->
-<!--                                </a>-->
-                                <!-- Single Wedge End -->
-<!--                                <a href="#offcanvas-cart" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">-->
-<!--                                    <i class="pe-7s-shopbag"></i>-->
-<!--                                    <span class="header-action-num">01</span>-->
-<!--                                    &lt;!&ndash; <span class="cart-amount">€30.00</span> &ndash;&gt;-->
-<!--                                </a>-->
                                 <a href="#offcanvas-mobile-menu" class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
                                     <i class="pe-7s-menu"></i>
                                 </a>
@@ -145,7 +97,6 @@
                                 <li class="dropdown position-static"><a href="{% url 'phones_catalog' product_type='laptops' %}">Mac</a></li>
                                 <li class="dropdown position-static"><a href="{% url 'phones_catalog' product_type='headphones' %}">Air Pods</a></li>
                                 <li class="dropdown "><a href="{% url 'phones_catalog' product_type='accessories' %}">Аксессуары</a></li>
-                                <li><a href="contact.html">Контакты</a></li>
                             </ul>
                         </div>
                     </div>
@@ -155,17 +106,9 @@
 
             <div class="mobile-search-box d-lg-none">
                 <div class="container">
-                    <!-- mobile search start -->
-<!--                    <div class="search-element max-width-100">-->
-<!--                        <form action="#">-->
-<!--                            <input type="text" placeholder="Поиск" />-->
-<!--                            <button><i class="pe-7s-search"></i></button>-->
-<!--                        </form>-->
-<!--                    </div>-->
-                    <!-- mobile search start -->
-                </div>
             </div>
-        </header>
+        </div>
+    </header>
 
         <!-- offcanvas overlay start -->
         <div class="offcanvas-overlay"></div>
@@ -278,7 +221,6 @@
                         <li><a href="{% url 'phones_catalog' product_type='laptops' %}"><span class="menu-text">Mac</span></a></li>
                         <li><a href="{% url 'phones_catalog' product_type='headphones' %}"><span class="menu-text">Air Pods</span></a></li>
                         <li><a href="{% url 'phones_catalog' product_type='accessories' %}"><span class="menu-text">Аксессуары</span></a></li>
-                        <li><a href="contact.html">Контакты</a></li>
                     </ul>
                 </div>
                 <!-- OffCanvas Menu End -->
@@ -575,7 +517,6 @@
         </div>
     </div>
 
-
     <!-- Global Vendor, plugins JS -->
     <!-- JS Files
     ============================================ -->
@@ -597,6 +538,6 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="{% static 'assets/js/main.js' %}"></script>
-</body>
 
+</body>
 </html>
