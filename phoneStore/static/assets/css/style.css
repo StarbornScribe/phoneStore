@@ -502,7 +502,7 @@ input {
   animation: sticky 1s;
   -webkit-box-shadow: 2px 4px 8px rgba(51, 51, 51, 0.25);
   box-shadow: 2px 4px 8px rgba(51, 51, 51, 0.25);
-  background-color: #266bf9;
+  background-color: #a1a1a1;
 }
 .sticky-nav.menu_fixed.style-1 {
   background-color: #252525;
@@ -715,7 +715,8 @@ header .main-menu {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background-color: #266bf9;
+  background-color: #a1a1a1;
+  border-radius: 30px 30px 0 0;
 }
 header .main-menu ul {
   display: -webkit-box;
@@ -9965,4 +9966,8 @@ video::-webkit-media-controls {
 
 .swiper-thumbnails .swiper-slide img {
     border-radius: 8px;
+}
+
+.footer-bottom {
+    border-radius: 0 0 30px 30px;
 }
