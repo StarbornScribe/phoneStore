@@ -1,13 +1,12 @@
 import os
 from .env_base import BASE_DIR
 
-FINLI_ENV = 'ENV_GUTUEV'
+PHONESTORE_ENV = 'ENV_GUTUEV'
 
 DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'fin-li.local'
 ]
 
 # Смысл данной логики в том, что при использовании DEBUG = True

@@ -7,7 +7,7 @@ import types
 import importlib
 
 # Тут происходит импорт настроек по конфигурации env_base
-from phoneStore.phoneStore.env_settings.env_base import *
+from .env_settings.env_base import *
 
 # Тут захардкожено значение по умолчанию, но по факту не важно, какое оно, т.к. все настройки PROD
 # уже есть в env_settings/env_base.py

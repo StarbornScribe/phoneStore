@@ -1,15 +1,11 @@
-import json
-from typing import List, Any, Dict, Optional
-from django.http import JsonResponse
+from typing import List, Any, Dict
 from django.views.generic import DetailView
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from phoneStore.settings import EMAIL_HOST_USER
-from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
-from django.http import HttpResponseRedirect
-
+from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock
 
 
 def bootstrap_page_handler(request):
