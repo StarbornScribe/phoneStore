@@ -19,8 +19,6 @@ from django.db.models import QuerySet
 from django.views.decorators.csrf import csrf_exempt
 
 
-
-
 def bootstrap_page_handler(request):
     # print("bootstrap_page_handler called")
     # pdb.set_trace()  # This will pause execution and allow you to inspect variables.
@@ -69,12 +67,6 @@ class PhoneDetailView(DetailView):
 
         return context
 
-    # def get_object(self, queryset=None):
-    #     # Fetch the object based on the slug
-    #     slug = self.kwargs.get('slug')
-    #
-    #     return PropertyInstance
-
   
 def phones_catalog(request, product_type, product_name=None):
     if product_name:
@@ -102,7 +94,6 @@ def phones_catalog(request, product_type, product_name=None):
 # ---------
 # Склад
 # ---------
-
 
 def product_detail_view(request, slug, stock_id):
     # Получаем объект ProductInstance по slug
@@ -226,7 +217,9 @@ def phones_catalog_thrid(request, product_type, product_name=None):
     }
     return render(request, 'catalog.html', context)
 
-
+# -------------------
+# Корзина
+# -------------------
 
 def send_form_email(request) -> HttpResponse:
     product: Dict[str, Any] = request.session.get('stock_data')
@@ -338,6 +331,7 @@ def add_to_cart(request: HttpRequest, stock_id: int) -> HttpResponseRedirect:
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+
     return redirect("view_cart")
 
 
@@ -358,8 +352,12 @@ def view_cart(request: HttpRequest) -> HttpResponse:
 def remove_from_cart(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
     cart_item = get_object_or_404(CartItem, id = item_id)
     cart_item.delete()
+
     return redirect("view_cart")
 
+# -------------------
+# Оплата
+# -------------------
 
 # # Функция для создания платежа в Альфа-Кассе
 # def create_payment(request: HttpRequest) -> HttpResponse:
