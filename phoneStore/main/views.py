@@ -5,6 +5,7 @@ from typing import List, Any, Dict, Optional
 
 from django.conf import settings
 from django.http import JsonResponse
+from typing import List, Any, Dict
 from django.views.generic import DetailView
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -17,6 +18,7 @@ from django.http import HttpRequest
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.views.decorators.csrf import csrf_exempt
+from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock
 
 
 def bootstrap_page_handler(request):
