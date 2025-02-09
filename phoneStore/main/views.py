@@ -336,6 +336,34 @@ def add_to_cart(request: HttpRequest, stock_id: int) -> HttpResponseRedirect:
 
     return redirect("view_cart")
 
+def remove_item_from_cart(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
+    """
+    Функция удаления одной штуки из позиции товара из корзины
+    Пример: Было 10 станет 9
+    """
+    cart_item: CartItem = get_object_or_404(CartItem, id = item_id)
+
+    if cart_item.quantity <= 1:
+        cart_item.delete()
+
+    else:
+        cart_item.quantity -= 1
+        cart_item.save()
+
+    return redirect("view_cart")
+
+
+def remove_position_from_cart(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
+    """
+    Функция удаления целой позиции товара из корзины
+    Пример: Было 10 станет 0
+    """
+    cart_item: CartItem = get_object_or_404(CartItem, id = item_id)
+
+    cart_item.delete()
+
+    return redirect("view_cart")
+
 
 #Функция отображения корзины пользователя
 def view_cart(request: HttpRequest) -> HttpResponse:
@@ -349,13 +377,6 @@ def view_cart(request: HttpRequest) -> HttpResponse:
 
     return render(request, "cart.html", context)
 
-
-#Функция удаления товара из корзины
-def remove_from_cart(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
-    cart_item = get_object_or_404(CartItem, id = item_id)
-    cart_item.delete()
-
-    return redirect("view_cart")
 
 # -------------------
 # Оплата
