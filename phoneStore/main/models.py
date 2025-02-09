@@ -1,8 +1,8 @@
 from django.db import models
-from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+import uuid
 
 
 class ProductType(models.Model):
@@ -14,6 +14,7 @@ class ProductType(models.Model):
 
 
 class ProductInstance(models.Model):
+    # В данной таблице есть поле id, оно автоматически создается Django
     # Описывает какие конкретно модели продуктов могут быть (iphone 10, samsung galaxy 10 и.т.д)
     product_type_id = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -103,15 +104,53 @@ class CartItem(models.Model):
     Описывает конкретные товары и их количество в корзине.
     """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
+    # product = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
+    stock_product: Stock = models.ForeignKey(Stock, on_delete=models.CASCADE, default=1)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
+
     def __str__(self):
-        return f"{self.quantity} of {self.product.name}"
+        return f"{self.quantity} of {self.stock_product.product_instance.name}"
 
     @property
-    def total_price(self):
+    def get_memory_size(self):
         # Допустим, в характеристиках продукта есть цена
-        price = self.product.propertyinstance_set.filter(property_type_id__name='Цена').first()
-        return int(price.value) * self.quantity if price else 0
+        memory_size = self.stock_product.product_instance.propertyinstance_set.filter(property_type_id__name='Встроенная память').first()
+        if memory_size is None:
+            rc = " "
+        else:
+            rc = memory_size.value
+
+        return rc
+
+    @property
+    def get_color(self):
+        color = self.stock_product.product_instance.propertyinstance_set.filter(property_type_id__name='Цвет').first()
+        if color is None:
+            rc = " "
+        else:
+            rc = color.value
+        return rc
+
+    @property
+    def get_total_price(self):
+        price = self.stock_product.price
+        return price * self.quantity
+
+    @property
+    def get_image(self):
+        image = self.stock_product.imagesinstance_set.all()[0]
+        return image.image.url
+
+class Order(models.Model):
+    "Заказ после успешной оплаты"
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, default="pending") # Здесь возможно три варианта: # pending, paid, canceled
+    order_id = models.UUIDField(default=uuid.uuid4, unique=True)
+
+    def __str__(self):
+        return f"Order {self.order_id} - {self.status}"
+

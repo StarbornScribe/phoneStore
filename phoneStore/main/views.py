@@ -1,14 +1,23 @@
 import json
+import uuid
+import requests
 from typing import List, Any, Dict, Optional
+
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.generic import DetailView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from phoneStore.settings import EMAIL_HOST_USER
-from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock
+from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock, Cart, CartItem, Order
 from django.http import HttpResponseRedirect
+from django.http import HttpRequest
+from django.contrib.auth.models import User
+from django.db.models import QuerySet
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 
@@ -124,6 +133,7 @@ def product_detail_view(request, slug, stock_id):
     context: Dict = {
         'product': product_instance,
         'stock_data': stock_data,
+        'stock_id': stock_id
     }
     request.session['stock_data'] = stock_data
 
@@ -217,83 +227,6 @@ def phones_catalog_thrid(request, product_type, product_name=None):
     return render(request, 'catalog.html', context)
 
 
-# -----------
-# Корзина
-# -----------
-
-# def add_to_cart(request, product_id):
-#     """
-#     Добавление товара в корзину:
-#     """
-#     product = get_object_or_404(ProductInstance, id=product_id)
-#     quantity = int(request.GET.get('quantity', 1))  # Количество товара (по умолчанию 1)
-#
-#     # Загружаем корзину из cookies
-#     cart = request.cart['cart']
-#
-#     # Проверяем, есть ли товар уже в корзине
-#     for item in cart:
-#         if item['product_id'] == product_id:
-#             item['quantity'] += quantity
-#             break
-#     else:
-#         cart.append({'product_id': product_id, 'quantity': quantity})
-#
-#     # Обновляем cookies
-#     response = JsonResponse({'message': 'Товар добавлен в корзину'})
-#     response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
-#
-#     return response
-
-
-# def remove_from_cart(request, product_id):
-#     """
-#     Удаление товара из корзины
-#     """
-#     cart = request.cart['cart']
-#     cart = [item for item in cart if item['product_id'] != product_id]
-#
-#     response = JsonResponse({'message': 'Товар удалён из корзины'})
-#     response.set_cookie('cart', json.dumps({'cart': cart}), httponly=True)
-#
-#     return response
-
-
-# def cart_detail(request):
-#     """
-#     Отображение корзины
-#     """
-#     cart = request.cart['cart']
-#
-#     # Получаем товары из базы данных
-#     product_ids = [item['product_id'] for item in cart]
-#     products = ProductInstance.objects.filter(id__in=product_ids)
-#
-#     # Собираем данные для отображения
-#     cart_items = []
-#     total_price = 0
-#
-#     for item in cart:
-#         product = products.get(id=item['product_id'])
-#         price = product.propertyinstance_set.filter(property_type_id__name='Цена').first()
-#         price_value = int(price.value) if price else 0
-#         total_item_price = price_value * item['quantity']
-#
-#         cart_items.append({
-#             'product': product,
-#             'quantity': item['quantity'],
-#             'price': price_value,
-#             'total_price': total_item_price,
-#         })
-#
-#         total_price += total_item_price
-#
-#     return render(request, 'cart_detail.html', {
-#         'cart_items': cart_items,
-#         'total_price': total_price,
-#     })
-
-
 
 def send_form_email(request) -> HttpResponse:
     product: Dict[str, Any] = request.session.get('stock_data')
@@ -364,4 +297,168 @@ def get_order(request) -> HttpResponse:
         context['memory'] = memory_size
 
     return render(request, 'post.html', context)
+
+
+#Функция получения/создания корзины пользователя
+def get_user_cart(request: HttpRequest) -> Cart:
+    """
+    Получает (или создаёт) корзину текущего пользователя.
+
+    Если пользователь авторизован, корзина привязывается к нему.
+    Если нет — корзина привязывается к session_id (идентификатору сессии).
+
+    :param request: HttpRequest объект, содержащий данные запроса.
+    :return: Объект корзины (Cart).
+    """
+    if request.user.is_authenticated:
+        # get_or_create возвращает кортеж из двух значений (объект корзины, True - если корзина создана, False - корзина уже существовала)
+        cart, created = Cart.objects.get_or_create(user=request.user)
+    else:
+        # Получаем session_id для анонимного пользователя
+        session_id: Optional[str] = request.session.session_key
+        # Если session_id отсутствует, создаём новую сессию
+        if not session_id:
+            request.session.create()
+            session_id = request.session.session_key
+
+        # Создаём или получаем корзину по session_id
+        cart, created = Cart.objects.get_or_create(session_id=session_id)
+
+    return cart
+
+
+#Функция добавления товара в корзину
+def add_to_cart(request: HttpRequest, stock_id: int) -> HttpResponseRedirect:
+    cart: Cart = get_user_cart(request)
+    stock_product: Stock = get_object_or_404(Stock, id=stock_id)
+    cart_item: CartItem
+    created: bool
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, stock_product=stock_product)
+    # Если товар уже был в корзине, то есть ничего не создалось
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect("view_cart")
+
+
+#Функция отображения корзины пользователя
+def view_cart(request: HttpRequest) -> HttpResponse:
+    cart: Cart = get_user_cart(request)
+    cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
+    cart_total_price = sum(item.get_total_price for item in cart_items)
+    context: Dict[str, Any] = {
+        "cart_items": cart_items,
+        "total_price": cart_total_price
+    }
+
+    return render(request, "cart.html", context)
+
+
+#Функция удаления товара из корзины
+def remove_from_cart(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
+    cart_item = get_object_or_404(CartItem, id = item_id)
+    cart_item.delete()
+    return redirect("view_cart")
+
+
+# # Функция для создания платежа в Альфа-Кассе
+# def create_payment(request: HttpRequest) -> HttpResponse:
+#     """
+#        Создаёт платёж в Альфа-Кассе.
+#
+#        1. Получает корзину пользователя и товары из неё.
+#        2. Проверяет, пуста ли корзина.
+#        3. Считает общую сумму заказа.
+#        4. Генерирует уникальный order_id.
+#        5. Формирует payload (данные для API Альфа-Кассы).
+#        6. Отправляет POST-запрос в Альфа-Кассу.
+#        7. Если успешно, перенаправляет пользователя на страницу оплаты.
+#        8. Если ошибка — возвращает JSON с ошибкой.
+#
+#        :param request: HttpRequest — объект запроса от пользователя.
+#        :return: HttpResponse — редирект на страницу оплаты или JSON с ошибкой.
+#        """
+#     # 1. Получаем корзину текущего пользователя
+#     cart: Cart = get_user_cart(request)
+#     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
+#     # 2. Проверяем, есть ли товары в корзине
+#     if not cart_items.exists():
+#         return JsonResponse({"error": "Корзина пустая"}, status = 400)
+#     # 3. Считаем общую сумму заказа
+#     total_price: int = sum(item.total_price for item in cart_items)
+#     # 4. Генерируем уникальный ID заказа, переводим в str для отправить в API
+#     order_id: str = str(uuid.uuid4())
+#     # 5. Формируем payload для запроса в Альфа-Кассу
+#     payload: dict[str, Any] = {
+#         #Todo: добавить инфу про ALFA_параметры
+#         "userName": settings.ALFA_MERCHANT_ID,
+#         "password": settings.ALFA_SECRET,
+#         "orderNumber": order_id,
+#         "amount": total_price,
+#         "currency": 643, # Российский рубль
+#         #Todo: сделать html success_pay
+#         "returnUrl": "https://iphoneondon.ru/success_pay/",
+#         # Todo: сделать html payment_failed
+#         "failUrl": "https://iphoneondon.ru/payment_failed/",
+#         "description": f"Оплата заказа {order_id}",
+#         "jsonParams": {"cart_id": cart.id},
+#     }
+#     # 6. Отправляем POST-запрос в API Альфа-Кассы
+#     # Todo:Добавить ALFA_API_URL
+#     response: request.Response = requests.post(settings.ALFA_API_URL + "register.do", data=payload)
+#     # 7. Обрабатываем ответ от Альфа-Кассы
+#     if response.status_code == 200 and response.json().get("orderId"):
+#     #Если API вернул orderId — перенаправляем пользователя на страницу оплаты
+#         return redirect(response.json()["formUrl"])
+#     else:
+#         # Если произошла ошибка — возвращаем JSON с деталями
+#         return JsonResponse(
+#             {
+#                 "error": "Ошибка при создании платежа",
+#                 "details": response.json()  # API обычно возвращает текст ошибки
+#             },
+#             status=400
+#         )
+#
+# #Функция обрабатывает уведомление об оплате от Альфа-Кассы.
+# @csrf_exempt  # Отключаем проверку CSRF для входящих запросов от Альфа-Кассы
+# def alfa_callback(request: HttpRequest) -> JsonResponse:
+#     """
+#         Обрабатывает уведомление об оплате от Альфа-Кассы.
+#
+#         1. Проверяет, что запрос типа POST.
+#         2. Достаёт `cart_id` и `orderStatus` из тела запроса.
+#         3. Если `orderStatus == "1"` (оплата прошла успешно):
+#             - Создаёт объект `Order` (Заказ).
+#             - Удаляет все товары из корзины.
+#         4. Возвращает JSON-ответ об успешной обработке.
+#
+#         :param request: HttpRequest — входящий HTTP-запрос.
+#         :return: JsonResponse — JSON-ответ с результатом обработки.
+#         """
+#     # 1. Проверяем, что запрос типа POST
+#     if request.method != "POST":
+#         return JsonResponse({"error": "Метод не поддерживается"}, status=405)
+#     try:
+#         # 2. Парсим входные данные
+#         data: dict = json.loads(request.body) # Альфа-Касса передаёт JSON-тело
+#         cart_id: str | None = data.get("jsonParams", {}).get("cart_id") # Достаём cart_id
+#         order_status: str | None = data.get("orderStatus")  # Достаём статус оплаты
+#         if not cart_id or order_status is None:
+#             return JsonResponse({"error": "Некорректные данные"}, status=400)
+#         # 3. Если заказ успешно оплачен (`orderStatus == "1"`)
+#         if order_status == '1':
+#             cart: Cart = get_object_or_404(Cart, id=cart_id)
+#             cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
+#             # 4. Создаём заказ
+#             total_price: int = sum(item.total_price for item in cart_items)
+#             Order.objects.create(user=cart.user, total_price=total_price)
+#             # 5. Очищаем корзину после успешной оплаты
+#             cart_items.delete()
+#         return JsonResponse({"status": "ok"})  # Отвечаем Альфа-Кассе, что запрос обработан
+#     except json.JSONDecodeError:
+#         return JsonResponse({"error": "Ошибка обработки JSON"}, status=400)
+#     except Cart.DoesNotExist:
+#         return JsonResponse({"error": "Корзина не найдена"}, status=404)
+
 
