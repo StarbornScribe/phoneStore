@@ -365,3 +365,10 @@ def get_order(request) -> HttpResponse:
 
     return render(request, 'post.html', context)
 
+
+def public_offer(request) -> HttpResponse:
+    return render(request, 'public_offer.html')
+
+
+def confidential_policy(request) -> HttpResponse:
+    return render(request, 'confidential_policy.html')
