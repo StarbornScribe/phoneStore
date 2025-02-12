@@ -32,8 +32,10 @@ urlpatterns = [
     # path('cart/', views.cart_detail, name='cart_detail'),
     # path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     # path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
-    path('create', views.get_order, name = 'create_order'),
-    path('success', views.send_form_email, name = 'send_form_email')
+    path('create', views.get_order, name='create_order'),
+    path('success', views.send_form_email, name='send_form_email'),
+    path('public_offer', views.public_offer, name='public_offer'),
+    path('confidential_policy', views.confidential_policy, name='confidential_policy')
     # path('send_form', views.send_form_email, name='send_form'),
     # path('your-name/', views.get_name, name='your_name')
 ]
