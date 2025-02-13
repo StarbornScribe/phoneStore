@@ -71,16 +71,16 @@ WSGI_APPLICATION: str = 'phoneStore.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES: Dict[str, Any]
 
-FINLI_DB_TYPE_VALUES: List[str] = ['mysql', 'sqlite']
-FINLI_DB_TYPE_DEFAULT: str = 'sqlite'
-FINLI_DB_TYPE: str = str(os.environ.get('FINLI_DB_TYPE', FINLI_DB_TYPE_DEFAULT)).upper()
-finli_db_type_value: str = str(FINLI_DB_TYPE).lower()
+PHONESTONE_DB_TYPE_VALUES: List[str] = ['mysql', 'sqlite']
+PHONESTORE_DB_TYPE_DEFAULT: str = 'sqlite'
+PHONESTORE_DB_TYPE: str = str(os.environ.get('FINLI_DB_TYPE', PHONESTORE_DB_TYPE_DEFAULT)).upper()
+phonestore_db_type_value: str = str(PHONESTORE_DB_TYPE).lower()
 
-if finli_db_type_value not in FINLI_DB_TYPE_VALUES:
-    raise ValueError('Нет такой конфигурации базы данных: ' + finli_db_type_value)
+if phonestore_db_type_value not in PHONESTONE_DB_TYPE_VALUES:
+    raise ValueError('Нет такой конфигурации базы данных: ' + phonestore_db_type_value)
 else:
     # Настройка для sqlite3
-    if finli_db_type_value == 'sqlite':
+    if phonestore_db_type_value == 'sqlite':
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
@@ -89,7 +89,7 @@ else:
         }
 
     # Настройка для MySQL/MariaDB
-    elif finli_db_type_value == 'mysql':
+    elif phonestore_db_type_value == 'mysql':
 
         DATABASES = {
             'default': {
