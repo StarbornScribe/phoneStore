@@ -7,3 +7,4 @@ tzdata==2024.2
 gunicorn
 mysqlclient
 requests
+
