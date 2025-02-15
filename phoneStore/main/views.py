@@ -301,6 +301,11 @@ def public_offer(request) -> HttpResponse:
 def confidential_policy(request) -> HttpResponse:
     return render(request, 'confidential_policy.html')
 
+
+def get_payment_details(request) -> HttpResponse:
+    return render(request, 'payment_details.html')
+
+
 #Функция получения/создания корзины пользователя
 def get_user_cart(request: HttpRequest) -> Cart:
     """
