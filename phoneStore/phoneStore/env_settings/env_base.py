@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-6z2tgaqqvzf5ciq%#(js@tfgklzoo&^0*x-l%5uq9yss^e_c#n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG: bool = False
 
-ALLOWED_HOSTS: List[str] = ['iphoneondon.ru']
+ALLOWED_HOSTS: List[str] = ['iphoneondon.ru', 'new.iphoneondon.ru', 'prelive1.iphoneondon.ru']
 
 
 # Application definition
