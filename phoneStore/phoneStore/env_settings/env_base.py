@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-6z2tgaqqvzf5ciq%#(js@tfgklzoo&^0*x-l%5uq9yss^e_c#n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG: bool = False
 
-ALLOWED_HOSTS: List[str] = ['iphoneondon.ru', 'new.iphoneondon.ru', 'prelive1.iphoneondon.ru']
+ALLOWED_HOSTS: List[str] = ['iphoneondon.ru']
 
 
 # Application definition
@@ -73,7 +73,7 @@ DATABASES: Dict[str, Any]
 
 PHONESTONE_DB_TYPE_VALUES: List[str] = ['mysql', 'sqlite']
 PHONESTORE_DB_TYPE_DEFAULT: str = 'sqlite'
-PHONESTORE_DB_TYPE: str = str(os.environ.get('FINLI_DB_TYPE', PHONESTORE_DB_TYPE_DEFAULT)).upper()
+PHONESTORE_DB_TYPE: str = str(os.environ.get('PHONESTORE_DB_TYPE', PHONESTORE_DB_TYPE_DEFAULT)).upper()
 phonestore_db_type_value: str = str(PHONESTORE_DB_TYPE).lower()
 
 if phonestore_db_type_value not in PHONESTONE_DB_TYPE_VALUES:
@@ -141,6 +141,9 @@ USE_TZ: bool = True
 
 STATIC_URL: str = '/static/'
 STATIC_ROOT: str = 'static'
+
+MEDIA_URL: str = '/media/'
+MEDIA_ROOT: str = 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
