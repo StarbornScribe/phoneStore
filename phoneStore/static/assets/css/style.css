@@ -10063,3 +10063,32 @@ video::-webkit-media-controls {
 video::-webkit-media-controls-start-playback-button {
   display: none !important;
 }
+
+/* ----------------- */
+/* Настрока стилей корзины */
+/* ----------------- */
+
+.delete-btm {
+  background-color: #cc0000;
+  max-width: 120px;
+}
+
+.quantity-btm {
+  border: 1px solid #a1a1a1; /* Параметры рамки */
+  background-color: #fff;
+  width: 75px;
+  color: #a1a1a1;
+}
+
+.cart-item img {
+    max-width: 100px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+}
+
+.pay-btn {
+    background-color: #0d6efd;
+}
+/* ----------------- */

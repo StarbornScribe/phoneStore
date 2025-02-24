@@ -1,0 +1,65 @@
+{% extends "base_template.html" %}
+{% load static %}
+{% block content %}
+
+{% if cart_items %}
+    <div class="container py-5">
+        <h2 class="mb-4">Ваша корзина</h2>
+        <div class="list-group">
+            {% for item in cart_items %}
+            <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center cart-item">
+                <!-- Изображение -->
+                <div class="cart-img">
+                    <img src="{{ item.get_image }}" alt="Товар" class="img-fluid mb-3 mb-md-0">
+                </div>
+
+                <!-- Описание товара -->
+                <div class="flex-grow-1 text-center text-md-start ms-md-3">
+                    <h5 class="mb-1">{{ item.stock_product.product_instance.name }} {{ item.get_memory_size }}</h5>
+                    <p class="mb-1">Общая цена: <strong>{{ item.get_total_price }} ₽</strong></p>
+                    <p class="mb-1">Цвет: <strong>{{ item.get_color }}</strong></p>
+                </div>
+
+                <!-- Блок управления количеством -->
+                <div class="d-flex align-items-center justify-content-center my-2 me-md-5">
+                    <form action="{% url 'remove_item_from_cart' item_id=item.id %}" method=POST>
+                    {% csrf_token %}
+                        <button class="btn btn-outline-secondary btn-sm quantity-btm">-</button>
+                    </form>
+
+                    <span class="mx-2">{{ item.quantity }} шт</span>
+
+                    <form action="{% url 'add_to_cart' stock_id=item.stock_product.id %}" method=POST>
+                    {% csrf_token %}
+                        <button class="btn btn-outline-secondary btn-sm quantity-btm">+</button>
+                    </form>
+                </div>
+
+                <!-- Кнопка удаления -->
+                <div class="d-flex align-items-center mt-2 mt-md-0 ms-md-5">
+                    <form action="{% url 'remove_position_from_cart' item.id %}" method=POST>
+                    {% csrf_token %}
+                        <button class="btn btn-danger btn-sm delete-btm">Удалить</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Кнопка "Перейти к оплате" -->
+        <div class="d-flex justify-content-between mt-4">
+            <h4>Итого: <strong>{{ total_price }}</strong></h4>
+            <button class="btn btn-primary btn-lg pay-btn">Перейти к оплате</button>
+        </div>
+
+    </div>
+{% else %}
+    <div class="container py-5">
+        <div class="list-group">
+           <h2 class="mb-4">Ваша корзина пуста</h2>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+

@@ -1,0 +1,62 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="ru">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        .container { max-width: 900px; margin: auto; }
+        .section { margin-bottom: 20px; padding: 20px; border-radius: 8px; background: #f8f9fa; border: 1px solid #dee2e6; }
+    </style>
+
+    <div class="container">
+        <h1 class="text-center my-4">Согласие на обработку персональных данных</h1>
+        <p class="alert alert-warning">В соответствии с Федеральным законом № 152-ФЗ "О персональных данных" от 27.07.2006 г., настоящее согласие предоставляется в свободной форме и выражает безусловное согласие на обработку персональных данных.</p>
+
+        <div class="section">
+            <h2>Оператор обработки персональных данных</h2>
+            <p><strong>Индивидуальный предприниматель Фоминов Дмитрий Андреевич</strong></p>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>ИНН:</strong> 263411179265</li>
+                <li class="list-group-item"><strong>ОГРНИП:</strong> 324265100121270</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Персональные данные, подлежащие обработке</h2>
+            <ul class="list-group">
+                <li class="list-group-item">Фамилия, имя, отчество</li>
+                <li class="list-group-item">Адрес электронной почты</li>
+                <li class="list-group-item">Контактный телефон</li>
+                <li class="list-group-item">IP-адрес</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Цели обработки персональных данных</h2>
+            <ul class="list-group">
+                <li class="list-group-item">Предоставление услуг и выполнение договорных обязательств</li>
+                <li class="list-group-item">Направление уведомлений, связанных с оказанием услуг</li>
+                <li class="list-group-item">Обработка запросов и обращений субъектов персональных данных</li>
+                <li class="list-group-item">Информирование о мероприятиях, продуктах и услугах Оператора</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Порядок отзыва согласия</h2>
+            <p>Настоящее согласие действует до момента его отзыва субъектом персональных данных. Отзыв осуществляется путем направления письменного уведомления на электронный адрес: <strong>iphoneondon.ru@yandex.ru</strong>. В случае отзыва согласия Оператор вправе продолжить обработку данных в случаях, предусмотренных законодательством Российской Федерации.</p>
+        </div>
+
+        <div class="section">
+            <h2>Обеспечение безопасности платежей</h2>
+            <p>Безопасность обработки платежных данных обеспечивается партнерским банком <strong>АО "Альфа-Банк"</strong>, который соответствует стандартам <strong>PCI DSS</strong>.</p>
+            <ul class="list-group">
+                <li class="list-group-item">Передача данных осуществляется по защищенным каналам связи</li>
+                <li class="list-group-item">Обработка платежных данных производится на сертифицированных серверах</li>
+                <li class="list-group-item">Конфиденциальность информации гарантируется и не подлежит передаче третьим лицам</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
