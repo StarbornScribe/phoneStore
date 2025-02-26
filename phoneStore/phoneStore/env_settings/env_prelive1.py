@@ -28,7 +28,7 @@ DATABASES: Dict[str, Any]
 
 PHONESTONE_DB_TYPE_VALUES: List[str] = ['mysql', 'sqlite']
 PHONESTORE_DB_TYPE_DEFAULT: str = 'sqlite'
-PHONESTORE_DB_TYPE: str = str(os.environ.get('FINLI_DB_TYPE', PHONESTORE_DB_TYPE_DEFAULT)).upper()
+PHONESTORE_DB_TYPE: str = str(os.environ.get('PHONESTORE_DB_TYPE', PHONESTORE_DB_TYPE_DEFAULT)).upper()
 phonestore_db_type_value: str = str(PHONESTORE_DB_TYPE).lower()
 
 if phonestore_db_type_value not in PHONESTONE_DB_TYPE_VALUES:
