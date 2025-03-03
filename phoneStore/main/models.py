@@ -143,14 +143,45 @@ class CartItem(models.Model):
         image = self.stock_product.imagesinstance_set.all()[0]
         return image.image.url
 
+# Таблица для хранения кода валют
+class CurrencyCode(models.Model):
+    name = models.CharField(max_length=50, null=False)
+    code = models.IntegerField(null=False) # Согласно ISO 4217
+
+# Таблица для хранения заказов пользователя
 class Order(models.Model):
     "Заказ после успешной оплаты"
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, default="pending") # Здесь возможно три варианта: # pending, paid, canceled
-    order_id = models.UUIDField(default=uuid.uuid4, unique=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    customer_name = models.CharField(max_length=50, null=False)
+    customer_phone = models.CharField(max_length=50, null=False)
+    customer_email = models.CharField(max_length=50, null=False)
+    customer_address = models.CharField(max_length=50, null=True)
+    сurrency_code = models.ForeignKey(CurrencyCode, on_delete=models.CASCADE, null=False)
+    total_price = models.IntegerField(null=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=False)
+    status = models.CharField(max_length=20, default="pending", null=False) # Здесь возможно три варианта: # pending, paid, canceled
 
     def __str__(self):
         return f"Order {self.order_id} - {self.status}"
+
+
+#Cоздание таблицы OrderItem для хранения состава заказы
+class OrderItem(models.Model):
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=False)
+    stock_data = models.JSONField(verbose_name="stock data", null=False)
+    quantity = models.IntegerField(null=False)
+    price = models.IntegerField(null=False)
+    discount = models.FloatField(null=False)
+
+# Модель по типам оплаты
+class PaymentType(models.Model):
+    name = models.CharField(max_length=50, null=False) # CБП/карта/наличка
+
+# Таблица ставок на итоговую цену заказа
+class PaymentRate(models.Model):
+    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False, related_name='rate')
+    rate = models.FloatField(max_length=25, null=False)
+
+
+
 

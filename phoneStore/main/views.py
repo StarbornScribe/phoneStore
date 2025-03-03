@@ -18,7 +18,7 @@ from django.http import HttpRequest
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.views.decorators.csrf import csrf_exempt
-from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock
+from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock, PaymentType, PaymentRate
 
 
 def bootstrap_page_handler(request):
@@ -392,6 +392,20 @@ def view_cart(request: HttpRequest) -> HttpResponse:
 
 # -------------------
 # Оплата
+# Функция для оплаты товаров из корзины пользователя
+
+def pay_order(request: HttpRequest) -> HttpResponse:
+    # Получаем корзину пользователя из сессии
+    cart: Cart = get_user_cart(request)
+    cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
+    cart_total_price = sum(item.get_total_price for item in cart_items)
+
+    # Получаем все ставки для соответсвующих объектов из модели PaymentType
+    payment_rates = PaymentRate.objects.select_related('payment_type').all()
+    payment_name: List[str] = [rate.payment_type.name for rate in payment_rates]
+    rate = [rate.rate for rate in payment_rates]
+
+
 # -------------------
 
 # # Функция для создания платежа в Альфа-Кассе
