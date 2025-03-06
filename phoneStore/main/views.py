@@ -1,24 +1,16 @@
-import json
-import uuid
-import requests
 from typing import List, Any, Dict, Optional
-
-from django.conf import settings
-from django.http import JsonResponse
-from typing import List, Any, Dict
 from django.views.generic import DetailView
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from phoneStore.settings import EMAIL_HOST_USER
-from .models import ProductInstance, ProductType, PropertyType, PropertyInstance, ImagesInstance, Stock, Cart, CartItem, Order
-from django.http import HttpResponseRedirect
 from django.http import HttpRequest
-from django.contrib.auth.models import User
-from django.db.models import QuerySet
-from django.views.decorators.csrf import csrf_exempt
-from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock, PaymentType, PaymentRate
+from django.http import HttpResponseRedirect
+from django.db.models import QuerySet, CharField
+
+from phoneStore.settings import EMAIL_HOST_USER
+from .models import Cart, CartItem, Order, CurrencyCode, OrderItem, OrderStatus, PaymentType
+from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock, PaymentRate
 
 
 def bootstrap_page_handler(request):
@@ -272,28 +264,6 @@ def send_form_email(request) -> HttpResponse:
         return render(request, 'success.html', context)
 
 
-def get_order(request) -> HttpResponse:
-    # Получаем данные товара из сессии
-    product: Dict[str, Any] = request.session.get('stock_data')
-
-    color = [prop['value'] for prop in product['properties'] if prop['name'] == 'Цвет'][0]
-
-    context: Dict[str, Any] = {
-        "product": product,
-        "color": color,
-        "memory": None,
-        "quantity": 1,
-        "items_price": product['price'],
-    }
-    if product['product_type'] == 'headphones' or product['product_type'] == 'accessories':
-        context['memory'] = ''
-    else:
-        memory_size = [prop['value'] for prop in product['properties'] if prop['name'] == 'Встроенная память'][0]
-        context['memory'] = memory_size
-
-    return render(request, 'post.html', context)
-
-
 def public_offer(request) -> HttpResponse:
     return render(request, 'public_offer.html')
 
@@ -391,20 +361,111 @@ def view_cart(request: HttpRequest) -> HttpResponse:
 
 
 # -------------------
-# Оплата
-# Функция для оплаты товаров из корзины пользователя
+# Заказы и оплата
+# -------------------
 
+def create_order(request) -> HttpResponse:
+    cart: Cart = get_user_cart(request)
+    cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
+    cart_total_price = sum(item.get_total_price for item in cart_items)
+
+    context: Dict[str, Any] = {
+        "cart_items": cart_items,
+        "total_price": cart_total_price
+    }
+
+    # colors: List[str] = [item.get_color for item in cart_items]
+
+    # context: Dict[str, Any] = {
+    #     "product": product,
+    #     "color": color,
+    #     "memory": None,
+    #     "quantity": 1,
+    #     "items_price": product['price'],
+    # }
+    # if product['product_type'] == 'headphones' or product['product_type'] == 'accessories':
+    #     context['memory'] = ''
+    # else:
+    #     memory_size = [prop['value'] for prop in product['properties'] if prop['name'] == 'Встроенная память'][0]
+    #     context['memory'] = memory_size
+
+    return render(request, 'create_order.html', context)
+
+
+def register_order(request: HttpRequest) -> HttpResponse:
+    cart_object: Cart = get_user_cart(request)
+    cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart_object)
+    cart_total_price: float = sum(item.get_total_price for item in cart_items)
+
+    currency: str = CurrencyCode.objects.filter(name='RUB').first()
+    # Словарь параметров товара. Нужен, чтобы сформировать запись с инфо товара в JSON, которую кладём в таблицу OrderItem
+    properties_dict: Dict[str, CharField] = cart_items.first().get_property_list
+
+    if request.method == "POST":
+        user_data: Dict[str, str] = {
+            'location': request.POST.get('location', '').strip(),
+            'name': request.POST.get('name', '').strip(),
+            'phone': request.POST.get('phone', '').strip(),
+            'email': request.POST.get('email', '').strip(),
+        }
+        front_payment_type: str = request.POST.get('payment_method')
+
+        payment_type_object: PaymentType = PaymentType.objects.filter(name=front_payment_type).first()
+        payment_rate: float = PaymentRate.objects.filter(payment_type=payment_type_object).first().rate
+        order_total_price: float = cart_total_price * payment_rate
+
+        order_object: Order = Order(
+            customer_name=user_data['name'],
+            customer_phone=user_data['phone'],
+            customer_email=user_data['email'],
+            customer_address=user_data['location'],
+            currency_code=currency,
+            total_price=order_total_price,
+            payment_type=payment_type_object,
+            status=OrderStatus.objects.filter(name='pending').first()
+        )
+        order_object.save()
+
+        for item in cart_items:
+            item_data: Dict[str, str] = {
+                'product_name': item.get_item_name,
+                'properties': properties_dict
+            }
+
+            OrderItem(
+                order_id=order_object,
+                stock_data=item_data,
+                quantity=item.quantity,
+                price=item.get_total_price,
+                discount=0.0
+            ).save()
+
+    # context: Dict[str, Any] = {
+    #     'cart_items': cart_items,
+    #     'test': order_total_price
+    # }
+
+    return render(request, 'order.html')
+
+
+# Функция для оплаты товаров из корзины пользователя
 def pay_order(request: HttpRequest) -> HttpResponse:
     # Получаем корзину пользователя из сессии
     cart: Cart = get_user_cart(request)
     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
-    cart_total_price = sum(item.get_total_price for item in cart_items)
+
+    cart_total_price: float = sum(item.get_total_price for item in cart_items)
 
     # Получаем все ставки для соответсвующих объектов из модели PaymentType
     payment_rates = PaymentRate.objects.select_related('payment_type').all()
     payment_name: List[str] = [rate.payment_type.name for rate in payment_rates]
     rate = [rate.rate for rate in payment_rates]
 
+    context: Dict[str, Any] = {
+        'cart_items': cart_items,
+        'payment_rates': payment_rates
+    }
+    return render(request, 'order.html', context)
 
 # -------------------
 

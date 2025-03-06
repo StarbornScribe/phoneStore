@@ -1,0 +1,201 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+<div class="checkout-container">
+    <!-- Блок с товаром -->
+        <div class="container py-5">
+        <h2 class="mb-4">Формирование заказа</h2>
+        <div class="list-group">
+            {% for item in cart_items %}
+            <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center cart-item">
+                <!-- Изображение -->
+                <div class="cart-img">
+                    <img src="{{ item.get_image }}" alt="Товар" class="img-fluid mb-3 mb-md-0">
+                </div>
+
+                <!-- Описание товара -->
+                <div class="flex-grow-1 text-center text-md-start ms-md-3">
+                    <h5 class="mb-1">{{ item.stock_product.product_instance.name }} {{ item.get_memory_size }}</h5>
+                    <p class="mb-1">Общая цена: <strong>{{ item.get_total_price }} ₽</strong></p>
+                    <p class="mb-1">Цвет: <strong>{{ item.get_color }}</strong></p>
+                </div>
+            </div>
+            {% endfor %}
+            <h2 class="mt-4">Итого: {{ total_price }}</h2>
+        </div>
+    </div>
+
+    <!-- Блок с формой -->
+    <div class="order-form">
+        <h4>Ваши данные</h4>
+        <form action="{% url 'register_order' %}" method="POST">
+            {% csrf_token %}
+            <label for="location">Ваше местоположение:</label>
+            <input type="text" id="location" name="location" placeholder="Например, Ростов-на-Дону" required>
+
+            <label for="name">Ваше имя:</label>
+            <input type="text" id="name" name="name" placeholder="Ваше имя" required>
+
+            <label for="phone">Номер телефона:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Ваш телефон" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="Ваш e-mail" required>
+
+            <!-- Иконки способов оплаты -->
+            <div class="payment-methods">
+                <button type="button" class="payment-icon" data-method="cash">💵 Наличные</button>
+                <button type="button" class="payment-icon" data-method="card">💳 Безнал</button>
+                <button type="button" class="payment-icon" data-method="sbp">🌐 СБП</button>
+            </div>
+
+            <input type="hidden" id="payment-method" name="payment_method" value="">
+
+            <button type="submit" class="btn-submit">Оформить заказ</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.checkout-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.product-details {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.product-image {
+    width: 250px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    object-fit: cover;
+}
+
+.quantity-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.quantity-selector button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    color: #333;
+}
+
+.quantity-selector button:hover {
+    background-color: #e0e0e0;
+}
+
+.quantity-selector input {
+    width: 60px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.order-form {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.order-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.order-form .btn-submit {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.order-form .btn-submit:hover {
+    background-color: darkred;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.payment-icon {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.payment-icon.selected {
+    border-color: #000;
+    background-color: #f0f0f0;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Получаем все иконки способов оплаты
+        const paymentIcons = document.querySelectorAll('.payment-icon');
+        const paymentMethodInput = document.getElementById('payment-method');
+
+        // Добавляем обработчик события для каждой иконки
+        paymentIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                // Получаем значение способа оплаты из data-атрибута
+                const method = this.getAttribute('data-method');
+
+                // Устанавливаем значение в скрытое поле
+                paymentMethodInput.value = method;
+
+                // Убираем выделение у всех иконок
+                paymentIcons.forEach(icon => icon.classList.remove('selected'));
+
+                // Добавляем выделение выбранной иконке
+                this.classList.add('selected');
+            });
+        });
+
+        // Обработчик отправки формы
+        document.getElementById('payment-form').addEventListener('submit', function (e) {
+            if (!paymentMethodInput.value) {
+                e.preventDefault(); // Отменяем отправку, если способ оплаты не выбран
+                alert('Пожалуйста, выберите способ оплаты!');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

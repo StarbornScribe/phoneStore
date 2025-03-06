@@ -3,19 +3,27 @@ from typing import List
 from django import forms
 from django.contrib import admin
 
-from .models import ProductType, ProductInstance, PropertyType, PropertyInstance, ImagesInstance, Cart, CartItem, Stock
+from .models import (ProductType, ProductInstance, PropertyType, PropertyInstance,
+                     ImagesInstance, Cart, CartItem, Stock, OrderItem, Order, CurrencyCode,
+                     PaymentType, PaymentRate, OrderStatus)
 
 admin.site.register(ProductType)
-# admin.site.register(ProductInstance)
-# admin.site.register(PropertyType)
-# admin.site.register(PropertyInstance)
 admin.site.register(ImagesInstance)
-# admin.site.register(Stock)
 
 # Модели корзины
 # -------------
 admin.site.register(Cart)
 admin.site.register(CartItem)
+# -------------
+
+# Модели заказов
+# -------------
+admin.site.register(Order)
+admin.site.register(OrderItem)
+admin.site.register(OrderStatus)
+admin.site.register(CurrencyCode)
+admin.site.register(PaymentType)
+admin.site.register(PaymentRate)
 # -------------
 
 

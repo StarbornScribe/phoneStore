@@ -49,9 +49,10 @@
         <!-- Кнопка "Перейти к оплате" -->
         <div class="d-flex justify-content-between mt-4">
             <h4>Итого: <strong>{{ total_price }}</strong></h4>
-            <button class="btn btn-primary btn-lg pay-btn">Перейти к оплате</button>
+            <a href="{% url 'create_order'  %}">
+                <button class="btn btn-primary btn-lg pay-btn">Перейти к оплате</button>
+            </a>
         </div>
-
     </div>
 {% else %}
     <div class="container py-5">

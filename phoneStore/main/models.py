@@ -1,4 +1,6 @@
+from typing import Dict
 from django.db import models
+from django.db.models import PositiveIntegerField, DecimalField, QuerySet
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
@@ -52,10 +54,10 @@ class PropertyInstance(models.Model):
     def __str__(self):
         return f"{self.property_type_id.name}: {self.value} ({self.product_instance_id.name})"
 
+
 # ---------
 # Склад
 # ---------
-
 
 class Stock(models.Model):
     product_instance = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
@@ -79,10 +81,10 @@ class ImagesInstance(models.Model):
     def __str__(self):
         return f"Image for {self.image_instance_id.product_instance}"
 
+
 # ---------
 # Корзина
 # ---------
-
 
 class Cart(models.Model):
     """
@@ -104,14 +106,19 @@ class CartItem(models.Model):
     Описывает конкретные товары и их количество в корзине.
     """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    # product = models.ForeignKey(ProductInstance, on_delete=models.CASCADE)
     stock_product: Stock = models.ForeignKey(Stock, on_delete=models.CASCADE, default=1)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
-
     def __str__(self):
         return f"{self.quantity} of {self.stock_product.product_instance.name}"
+
+    @property
+    def get_item_name(self) -> str:
+        # Допустим, в характеристиках продукта есть цена
+        rc: str = self.stock_product.product_instance.name
+
+        return rc
 
     @property
     def get_memory_size(self):
@@ -121,7 +128,6 @@ class CartItem(models.Model):
             rc = " "
         else:
             rc = memory_size.value
-
         return rc
 
     @property
@@ -134,19 +140,69 @@ class CartItem(models.Model):
         return rc
 
     @property
-    def get_total_price(self):
-        price = self.stock_product.price
-        return price * self.quantity
+    def get_total_price(self) -> float:
+        price: DecimalField = self.stock_product.price
+
+        return float(price) * int(self.quantity)
 
     @property
     def get_image(self):
         image = self.stock_product.imagesinstance_set.all()[0]
+
         return image.image.url
+
+    @property
+    def get_property_list(self) -> Dict[str, str]:
+        properties: QuerySet[PropertyInstance] = self.stock_product.product_instance.propertyinstance_set.all()
+        rc: Dict[str, str] = {}
+
+        for prop in properties:
+            key = str(prop.property_type_id.name)
+            value = str(prop.value)
+
+            rc[key] = value
+
+        return rc
+
+# --------------------
+# Модели для оплаты
+# --------------------
 
 # Таблица для хранения кода валют
 class CurrencyCode(models.Model):
     name = models.CharField(max_length=50, null=False)
     code = models.IntegerField(null=False) # Согласно ISO 4217
+
+    def __str__(self):
+        return f"Currency {self.id} - {self.name}"
+
+# Модель по типам оплаты
+class PaymentType(models.Model):
+    name = models.CharField(max_length=50, null=False) # CБП/карта/наличка
+
+    def __str__(self):
+        return f"{self.name}"
+
+# Таблица ставок на итоговую цену заказа
+class PaymentRate(models.Model):
+    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False, related_name='rate')
+    rate = models.FloatField(max_length=25, null=False)
+
+    def __str__(self):
+        return f"Тип: {self.payment_type} | Ставка: {self.rate}"
+# --------------------
+
+
+# --------------------
+# Модели заказов
+# --------------------
+
+class OrderStatus(models.Model):
+    name = models.CharField(max_length=20,  null=False)
+
+    def __str__(self):
+        return f"{self.name}"
+
 
 # Таблица для хранения заказов пользователя
 class Order(models.Model):
@@ -156,13 +212,15 @@ class Order(models.Model):
     customer_phone = models.CharField(max_length=50, null=False)
     customer_email = models.CharField(max_length=50, null=False)
     customer_address = models.CharField(max_length=50, null=True)
-    сurrency_code = models.ForeignKey(CurrencyCode, on_delete=models.CASCADE, null=False)
+    currency_code = models.ForeignKey(CurrencyCode, on_delete=models.CASCADE, null=False)
     total_price = models.IntegerField(null=False)
+    # TODO: Указывает не Московское время
     created_at = models.DateTimeField(auto_now_add=True, null=False)
-    status = models.CharField(max_length=20, default="pending", null=False) # Здесь возможно три варианта: # pending, paid, canceled
+    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False)
+    status = models.ForeignKey(OrderStatus, null=False, on_delete=models.CASCADE)   # Здесь возможно три варианта: # pending, paid, canceled
 
     def __str__(self):
-        return f"Order {self.order_id} - {self.status}"
+        return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at}"
 
 
 #Cоздание таблицы OrderItem для хранения состава заказы
@@ -173,15 +231,4 @@ class OrderItem(models.Model):
     price = models.IntegerField(null=False)
     discount = models.FloatField(null=False)
 
-# Модель по типам оплаты
-class PaymentType(models.Model):
-    name = models.CharField(max_length=50, null=False) # CБП/карта/наличка
-
-# Таблица ставок на итоговую цену заказа
-class PaymentRate(models.Model):
-    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False, related_name='rate')
-    rate = models.FloatField(max_length=25, null=False)
-
-
-
-
+# --------------------
