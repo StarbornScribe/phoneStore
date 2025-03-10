@@ -1,12 +1,14 @@
-from typing import List, Any, Dict, Optional
+from http.client import responses
+from lib2to3.fixes.fix_input import context
+
+import requests
 from django.views.generic import DetailView
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-from django.core.mail import send_mail
-from django.http import HttpRequest
-from django.http import HttpResponseRedirect
+from typing import List, Any, Dict, Optional
 from django.db.models import QuerySet, CharField
+from django.template.loader import render_to_string
+from django.core.mail import send_mail, EmailMessage
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 
 from phoneStore.settings import EMAIL_HOST_USER
 from .models import Cart, CartItem, Order, CurrencyCode, OrderItem, OrderStatus, PaymentType
@@ -215,53 +217,117 @@ def phones_catalog_thrid(request, product_type, product_name=None):
 # Корзина
 # -------------------
 
-def send_form_email(request) -> HttpResponse:
-    product: Dict[str, Any] = request.session.get('stock_data')
+def check_order_status(request) -> HttpResponse:
+    response_status: bool = False
 
-    if request.method == "POST":
-        quantity: int = int(request.POST.get('quantity', 1))
-        unit_price: int = product['price']
-        # Собираем информацию о пользователе
-        user_data: Dict[str, str] = {
-            'location': request.POST.get('location', '').strip(),
-            'name': request.POST.get('name', '').strip(),
-            'phone': request.POST.get('phone', '').strip(),
-            'email': request.POST.get('email', '').strip(),
+    if request.method == "GET":
+        acquiring_order_id: str = request.GET.get('orderId', '').strip()
+
+        order_object: Order = Order.objects.filter(acquiring_order_id=acquiring_order_id).first()
+        order_item_list: List[OrderItem] = [item for item in OrderItem.objects.filter(order_id=order_object)]
+
+        request_data: Dict[str, str] = {
+           'userName': 'r-iphoneondon-api',
+           'password': 'r-iphoneondon*?1',
+           'orderId': acquiring_order_id
         }
+        response_data: Dict[str, str] =  send_request_for_alfabank(
+            request_data,
+            end_point='/rest/getOrderStatusExtended.do'
+        )
 
-        # Расчет стоимости
-        items_price = unit_price * quantity
-
-        # # Возвращаем JSON-ответ для обновления на странице
-        subject: str = "Новый заказ"
-        message: str = f"Заказ на товар: {product['name']}\n" \
-                  f"Количество: {quantity}\n" \
-                  f"Цена за единицу: {unit_price}\n" \
-                  f"Итого: {items_price}\n" \
-                  f"Данные покупателя:\n" \
-                  f"Имя: {user_data['name']}\n" \
-                  f"Телефон: {user_data['phone']}\n" \
-                  f"Email: {user_data['email']}\n" \
-                  f"Местоположение: {user_data['location']}"
-
-        # Получаем email из данных формы (если нужно)
-        recipient_list: List[str] = [EMAIL_HOST_USER]
-
-        response_status: bool = False
-        # Отправляем письмо в блоке try/except
-        try:
-            send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+        if response_data['orderStatus'] == 2:
             response_status = True
-        except Exception('Произошла ошибка отправки пиьсма. Обратитесь в поддержку') as e:
-            exception_text: str = e
 
-        request.session['response_status'] = response_status
-        context: Dict[str, bool] = {
-            "response_status": response_status
+        subject: str = f'Айфон-на-Дону. Заказ №{order_object.pk}'
+        email_content: Dict[str, Any] = {
+            'order_number': order_object.pk,
+            'order_item_list': order_item_list,
+            # TODO: Думаю лучше создать у модели метод конвертации в рубли
+            'order_total_price': order_object.total_price/100,
+            'customer_name': order_object.customer_name,
+            'customer_phone': order_object.customer_phone,
+            'customer_email': order_object.customer_email,
+            'is_delivery': 'Да' if order_object.is_delivery == True else 'Нет',
+            'customer_address': order_object.customer_address
         }
+        send_rendered_html_email(
+            subject=subject,
+            to_email=EMAIL_HOST_USER,
+            context=email_content,
+            template_name='order_info_mail.html'
+        )
 
-        # Вернем сообщение об успешной отправке
-        return render(request, 'success.html', context)
+    context: Dict[str, bool] = {
+        'response_status': response_status
+    }
+
+    # TODO: Нужно сообщать клиенту его номер заказа и отправлять пиьсмо на почту
+    # Вернем сообщение об успешной отправке
+    return render(request, 'success.html', context=context)
+
+# TODO: Перенести функцию во вспомогательные
+def send_rendered_html_email(subject, to_email, context, template_name):
+    # Рендеринг HTML-шаблона в строку
+    html_message = render_to_string(template_name, context)
+
+    # # Создание текстовой версии письма (опционально)
+    # plain_message = strip_tags(html_message)
+
+    # Создание объекта EmailMessage
+    email = EmailMessage(
+        subject=subject,
+        body=html_message,  # Тело письма в HTML
+        from_email=EMAIL_HOST_USER,  # Отправитель
+        to=[to_email],  # Получатель
+    )
+
+    # Указываем, что письмо содержит HTML
+    email.content_subtype = "html"
+
+    # Отправка письма
+    email.send()
+
+# def send_email(order_data: Dict[str, str], ):
+
+    # if request.method == "POST":
+    #     quantity: int = int(request.POST.get('quantity', 1))
+    #     unit_price: int = product['price']
+    #     # Собираем информацию о пользователе
+    #     user_data: Dict[str, str] = {
+    #         'location': request.POST.get('location', '').strip(),
+    #         'name': request.POST.get('name', '').strip(),
+    #         'phone': request.POST.get('phone', '').strip(),
+    #         'email': request.POST.get('email', '').strip(),
+    #     }
+    #
+    #     # Расчет стоимости
+    #     items_price = unit_price * quantity
+    #
+    #     # # Возвращаем JSON-ответ для обновления на странице
+    #     subject: str = "Новый заказ"
+    #     message: str = f"Заказ на товар: {product['name']}\n" \
+    #                    f"Количество: {quantity}\n" \
+    #                    f"Цена за единицу: {unit_price}\n" \
+    #                    f"Итого: {items_price}\n" \
+    #                    f"Данные покупателя:\n" \
+    #                    f"Имя: {user_data['name']}\n" \
+    #                    f"Телефон: {user_data['phone']}\n" \
+    #                    f"Email: {user_data['email']}\n" \
+    #                    f"Местоположение: {user_data['location']}"
+    #
+    #     # Получаем email из данных формы (если нужно)
+    #     recipient_list: List[str] = [EMAIL_HOST_USER]
+    #
+    #     response_status: bool = False
+    #     # Отправляем письмо в блоке try/except
+    #     try:
+    #         send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
+    #         response_status = True
+    #     except Exception('Произошла ошибка отправки пиьсма. Обратитесь в поддержку') as e:
+    #         exception_text: str = e
+    #
+    #     request.session['response_status'] = response_status
 
 
 def public_offer(request) -> HttpResponse:
@@ -349,6 +415,7 @@ def remove_position_from_cart(request: HttpRequest, item_id: int) -> HttpRespons
 
 #Функция отображения корзины пользователя
 def view_cart(request: HttpRequest) -> HttpResponse:
+    # TODO: Карзина не обнуляется при оплате заказа или завершения сессии
     cart: Cart = get_user_cart(request)
     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
     cart_total_price = sum(item.get_total_price for item in cart_items)
@@ -374,30 +441,18 @@ def create_order(request) -> HttpResponse:
         "total_price": cart_total_price
     }
 
-    # colors: List[str] = [item.get_color for item in cart_items]
-
-    # context: Dict[str, Any] = {
-    #     "product": product,
-    #     "color": color,
-    #     "memory": None,
-    #     "quantity": 1,
-    #     "items_price": product['price'],
-    # }
-    # if product['product_type'] == 'headphones' or product['product_type'] == 'accessories':
-    #     context['memory'] = ''
-    # else:
-    #     memory_size = [prop['value'] for prop in product['properties'] if prop['name'] == 'Встроенная память'][0]
-    #     context['memory'] = memory_size
-
     return render(request, 'create_order.html', context)
 
-
+# TODO: Необходимо учитывать, что клиент мог указать способ оплаты "Наличными"
 def register_order(request: HttpRequest) -> HttpResponse:
+    """
+    Регистрирует заказ в базе и отправляет запрос в эквайринг Альфы
+    """
     cart_object: Cart = get_user_cart(request)
     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart_object)
     cart_total_price: float = sum(item.get_total_price for item in cart_items)
 
-    currency: str = CurrencyCode.objects.filter(name='RUB').first()
+    currency_code: str = CurrencyCode.objects.filter(name='RUB').first()
     # Словарь параметров товара. Нужен, чтобы сформировать запись с инфо товара в JSON, которую кладём в таблицу OrderItem
     properties_dict: Dict[str, CharField] = cart_items.first().get_property_list
 
@@ -412,14 +467,16 @@ def register_order(request: HttpRequest) -> HttpResponse:
 
         payment_type_object: PaymentType = PaymentType.objects.filter(name=front_payment_type).first()
         payment_rate: float = PaymentRate.objects.filter(payment_type=payment_type_object).first().rate
-        order_total_price: float = cart_total_price * payment_rate
+        order_total_price: int = int(cart_total_price * payment_rate * 100)     # В копейках
 
         order_object: Order = Order(
             customer_name=user_data['name'],
             customer_phone=user_data['phone'],
             customer_email=user_data['email'],
             customer_address=user_data['location'],
-            currency_code=currency,
+            # TODO: Необходимо сделать логику под доставку
+            is_delivery=False,
+            currency_code=currency_code,
             total_price=order_total_price,
             payment_type=payment_type_object,
             status=OrderStatus.objects.filter(name='pending').first()
@@ -431,7 +488,6 @@ def register_order(request: HttpRequest) -> HttpResponse:
                 'product_name': item.get_item_name,
                 'properties': properties_dict
             }
-
             OrderItem(
                 order_id=order_object,
                 stock_data=item_data,
@@ -440,12 +496,43 @@ def register_order(request: HttpRequest) -> HttpResponse:
                 discount=0.0
             ).save()
 
-    # context: Dict[str, Any] = {
-    #     'cart_items': cart_items,
-    #     'test': order_total_price
-    # }
+        order_number: int = int(order_object.pk)
 
-    return render(request, 'order.html')
+        # TODO: Нужно сделать подсчёт итоговой стоимости с учетом коэфициентов на фронте
+        # TODO: Если выбраны "Наличка" или СБП переводим на другие страницы
+        json_data: Dict[str, str] = {
+            'userName': 'r-iphoneondon-api',
+            'password': 'r-iphoneondon*?1',
+            'orderNumber': order_number,
+            'amount': order_total_price,
+            'currency_code': currency_code,
+            'returnUrl': 'http://127.0.0.1:8000/success', # Адрес, на который требуется перенаправить пользователя в случае успешной оплаты
+            'failUrl': 'http://127.0.0.1:8000/',
+            'description': '', # Описание заказа в свободной форме.
+            'pageView': 'MOBILE',    # DESKTOP, MOBILE
+        }
+
+        response_data: Dict[str, str] = send_request_for_alfabank(json_data, end_point='/rest/register.do')
+        alfa_order_id: str = response_data['orderId']
+        alfa_payment_url: str = response_data['formUrl']
+
+        order_object.acquiring_order_id = alfa_order_id
+        order_object.save()
+
+        return redirect(alfa_payment_url)
+
+    return render(request, '.html')
+
+# TODO: Перенести в файл со вспомогательными функциями
+def send_request_for_alfabank(json_data: Dict[str, str], end_point: str) -> Dict[str, str]:
+    alfa_api_url: str = 'https://alfa.rbsuat.com/payment'
+
+    response = requests.post(url=alfa_api_url + end_point, data=json_data)
+
+    response_data: Dict[str, str] = response.json()
+
+    return response_data
+
 
 
 # Функция для оплаты товаров из корзины пользователя

@@ -1,0 +1,32 @@
+{% load static %}
+{% block content %}
+<div class="checkout-container" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+    <!-- Блок с товаром -->
+    <div class="container py-5">
+        <h2 style="text-align: center; color: #4CAF50;">Заказ № {{ order_number }}</h2>
+        <div class="list-group">
+            {% for item in order_item_list %}
+            <div class="list-group-item" style="margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px;">
+                <!-- Описание товара -->
+                <div style="margin-bottom: 10px;">
+                    <p style="margin: 0;"><strong>Товар:</strong> {{ item.stock_data.product_name }}</p>
+                    <p style="margin: 0;"><strong>Параметры:</strong> {{ item.unpack_properties_stock_data }}</p>
+                    <p style="margin: 0;"><strong>Количество:</strong> {{ item.quantity }}</p>
+                    <p style="margin: 0;"><strong>Общая цена позиции:</strong> {{ item.price }} ₽</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Информация о клиенте -->
+        <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
+            <p style="margin: 0;"><strong>Клиент:</strong> {{ customer_name }}</p>
+            <p style="margin: 0;"><strong>Телефон:</strong> {{ customer_phone }}</p>
+            <p style="margin: 0;"><strong>Email:</strong> {{ customer_email }}</p>
+            <p style="margin: 0;"><strong>Доставка:</strong> {{ is_delivery }}</p>
+            <p style="margin: 0;"><strong>Адрес доставки:</strong> {{ customer_address }}</p>
+        </div>
+        <!-- Итоговая цена -->
+        <h2 style="text-align: center; margin-top: 20px; color: #4CAF50;">Итого: {{ order_total_price }} ₽</h2>
+    </div>
+</div>
+{% endblock %}

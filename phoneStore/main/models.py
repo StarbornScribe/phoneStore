@@ -1,10 +1,9 @@
-from typing import Dict
 from django.db import models
-from django.db.models import PositiveIntegerField, DecimalField, QuerySet
+from django.db.models import DecimalField, QuerySet
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-import uuid
+from typing import Dict, Optional, List
 
 
 class ProductType(models.Model):
@@ -212,12 +211,14 @@ class Order(models.Model):
     customer_phone = models.CharField(max_length=50, null=False)
     customer_email = models.CharField(max_length=50, null=False)
     customer_address = models.CharField(max_length=50, null=True)
+    is_delivery = models.BooleanField(null=False)
     currency_code = models.ForeignKey(CurrencyCode, on_delete=models.CASCADE, null=False)
     total_price = models.IntegerField(null=False)
     # TODO: Указывает не Московское время
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False)
     status = models.ForeignKey(OrderStatus, null=False, on_delete=models.CASCADE)   # Здесь возможно три варианта: # pending, paid, canceled
+    acquiring_order_id = models.CharField(max_length=36) # Номер заказа в платёжной системе. Уникален в пределах системы.
 
     def __str__(self):
         return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at}"
@@ -231,4 +232,13 @@ class OrderItem(models.Model):
     price = models.IntegerField(null=False)
     discount = models.FloatField(null=False)
 
+    @property
+    def unpack_properties_stock_data(self) -> str:
+        string_list = [str(key) + ': ' + str(value) + ', ' for key, value in self.stock_data.get('properties').items()]
+        string_stock_data: str = ''
+
+        for element in string_list:
+            string_stock_data += element
+
+        return string_stock_data
 # --------------------
