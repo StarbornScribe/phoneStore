@@ -203,8 +203,15 @@ class OrderStatus(models.Model):
         return f"{self.name}"
 
 
+class TimeStampedModel(models.Model):
+    """Абстрактный базовый класс, который добавляет поля created_at и updated_at к моделям"""
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta: abstract = True
+
+
 # Таблица для хранения заказов пользователя
-class Order(models.Model):
+class Order(TimeStampedModel):
     "Заказ после успешной оплаты"
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     customer_name = models.CharField(max_length=50, null=False)
@@ -215,13 +222,12 @@ class Order(models.Model):
     currency_code = models.ForeignKey(CurrencyCode, on_delete=models.CASCADE, null=False)
     total_price = models.IntegerField(null=False)
     # TODO: Указывает не Московское время
-    created_at = models.DateTimeField(auto_now_add=True, null=False)
+    # created_at = models.DateTimeField(auto_now_add=True, null=False)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False)
     status = models.ForeignKey(OrderStatus, null=False, on_delete=models.CASCADE)   # Здесь возможно три варианта: # pending, paid, canceled
     acquiring_order_id = models.CharField(max_length=36) # Номер заказа в платёжной системе. Уникален в пределах системы.
-
     def __str__(self):
-        return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at}"
+        return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at} | Обновлен: {self.updated_at}"
 
 
 #Cоздание таблицы OrderItem для хранения состава заказы

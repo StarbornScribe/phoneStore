@@ -1,16 +1,11 @@
-from http.client import responses
-from lib2to3.fixes.fix_input import context
-
-import requests
 from django.views.generic import DetailView
 from typing import List, Any, Dict, Optional
 from django.db.models import QuerySet, CharField
-from django.template.loader import render_to_string
-from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 
 from phoneStore.settings import EMAIL_HOST_USER
+from .utils import send_rendered_html_email, send_request_for_alfabank
 from .models import Cart, CartItem, Order, CurrencyCode, OrderItem, OrderStatus, PaymentType
 from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock, PaymentRate
 
@@ -231,13 +226,14 @@ def check_order_status(request) -> HttpResponse:
            'password': 'r-iphoneondon*?1',
            'orderId': acquiring_order_id
         }
-        response_data: Dict[str, str] =  send_request_for_alfabank(
+        response_data: Dict[str, str] = send_request_for_alfabank(
             request_data,
             end_point='/rest/getOrderStatusExtended.do'
         )
-
         if response_data['orderStatus'] == 2:
             response_status = True
+            order_object.status = OrderStatus.objects.get(name='paid')
+            order_object.save()
 
         subject: str = f'Айфон-на-Дону. Заказ №{order_object.pk}'
         email_content: Dict[str, Any] = {
@@ -265,69 +261,6 @@ def check_order_status(request) -> HttpResponse:
     # TODO: Нужно сообщать клиенту его номер заказа и отправлять пиьсмо на почту
     # Вернем сообщение об успешной отправке
     return render(request, 'success.html', context=context)
-
-# TODO: Перенести функцию во вспомогательные
-def send_rendered_html_email(subject, to_email, context, template_name):
-    # Рендеринг HTML-шаблона в строку
-    html_message = render_to_string(template_name, context)
-
-    # # Создание текстовой версии письма (опционально)
-    # plain_message = strip_tags(html_message)
-
-    # Создание объекта EmailMessage
-    email = EmailMessage(
-        subject=subject,
-        body=html_message,  # Тело письма в HTML
-        from_email=EMAIL_HOST_USER,  # Отправитель
-        to=[to_email],  # Получатель
-    )
-
-    # Указываем, что письмо содержит HTML
-    email.content_subtype = "html"
-
-    # Отправка письма
-    email.send()
-
-# def send_email(order_data: Dict[str, str], ):
-
-    # if request.method == "POST":
-    #     quantity: int = int(request.POST.get('quantity', 1))
-    #     unit_price: int = product['price']
-    #     # Собираем информацию о пользователе
-    #     user_data: Dict[str, str] = {
-    #         'location': request.POST.get('location', '').strip(),
-    #         'name': request.POST.get('name', '').strip(),
-    #         'phone': request.POST.get('phone', '').strip(),
-    #         'email': request.POST.get('email', '').strip(),
-    #     }
-    #
-    #     # Расчет стоимости
-    #     items_price = unit_price * quantity
-    #
-    #     # # Возвращаем JSON-ответ для обновления на странице
-    #     subject: str = "Новый заказ"
-    #     message: str = f"Заказ на товар: {product['name']}\n" \
-    #                    f"Количество: {quantity}\n" \
-    #                    f"Цена за единицу: {unit_price}\n" \
-    #                    f"Итого: {items_price}\n" \
-    #                    f"Данные покупателя:\n" \
-    #                    f"Имя: {user_data['name']}\n" \
-    #                    f"Телефон: {user_data['phone']}\n" \
-    #                    f"Email: {user_data['email']}\n" \
-    #                    f"Местоположение: {user_data['location']}"
-    #
-    #     # Получаем email из данных формы (если нужно)
-    #     recipient_list: List[str] = [EMAIL_HOST_USER]
-    #
-    #     response_status: bool = False
-    #     # Отправляем письмо в блоке try/except
-    #     try:
-    #         send_mail(subject, message, EMAIL_HOST_USER, recipient_list)
-    #         response_status = True
-    #     except Exception('Произошла ошибка отправки пиьсма. Обратитесь в поддержку') as e:
-    #         exception_text: str = e
-    #
-    #     request.session['response_status'] = response_status
 
 
 def public_offer(request) -> HttpResponse:
@@ -498,41 +431,31 @@ def register_order(request: HttpRequest) -> HttpResponse:
 
         order_number: int = int(order_object.pk)
 
-        # TODO: Нужно сделать подсчёт итоговой стоимости с учетом коэфициентов на фронте
-        # TODO: Если выбраны "Наличка" или СБП переводим на другие страницы
-        json_data: Dict[str, str] = {
-            'userName': 'r-iphoneondon-api',
-            'password': 'r-iphoneondon*?1',
-            'orderNumber': order_number,
-            'amount': order_total_price,
-            'currency_code': currency_code,
-            'returnUrl': 'http://127.0.0.1:8000/success', # Адрес, на который требуется перенаправить пользователя в случае успешной оплаты
-            'failUrl': 'http://127.0.0.1:8000/',
-            'description': '', # Описание заказа в свободной форме.
-            'pageView': 'MOBILE',    # DESKTOP, MOBILE
-        }
+        if payment_type_object.name == 'card':
+            # TODO: Нужно сделать подсчёт итоговой стоимости с учетом коэфициентов на фронте
+            # TODO: Если выбраны "Наличка" или СБП переводим на другие страницы
+            json_data: Dict[str, str] = {
+                'userName': 'r-iphoneondon-api',
+                'password': 'r-iphoneondon*?1',
+                'orderNumber': order_number,
+                'amount': order_total_price,
+                'currency_code': currency_code,
+                'returnUrl': 'http://127.0.0.1:8000/success', # Адрес, на который требуется перенаправить пользователя в случае успешной оплаты
+                'failUrl': 'http://127.0.0.1:8000/',
+                'description': '', # Описание заказа в свободной форме.
+                'pageView': 'MOBILE',    # DESKTOP, MOBILE
+            }
 
-        response_data: Dict[str, str] = send_request_for_alfabank(json_data, end_point='/rest/register.do')
-        alfa_order_id: str = response_data['orderId']
-        alfa_payment_url: str = response_data['formUrl']
+            response_data: Dict[str, str] = send_request_for_alfabank(json_data, end_point='/rest/register.do')
+            alfa_order_id: str = response_data['orderId']
+            alfa_payment_url: str = response_data['formUrl']
 
-        order_object.acquiring_order_id = alfa_order_id
-        order_object.save()
+            order_object.acquiring_order_id = alfa_order_id
+            order_object.save()
 
-        return redirect(alfa_payment_url)
+            return redirect(alfa_payment_url)
 
-    return render(request, '.html')
-
-# TODO: Перенести в файл со вспомогательными функциями
-def send_request_for_alfabank(json_data: Dict[str, str], end_point: str) -> Dict[str, str]:
-    alfa_api_url: str = 'https://alfa.rbsuat.com/payment'
-
-    response = requests.post(url=alfa_api_url + end_point, data=json_data)
-
-    response_data: Dict[str, str] = response.json()
-
-    return response_data
-
+    return render(request, 'success.html')
 
 
 # Функция для оплаты товаров из корзины пользователя
