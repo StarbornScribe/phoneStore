@@ -229,6 +229,12 @@ class Order(TimeStampedModel):
     def __str__(self):
         return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at} | Обновлен: {self.updated_at}"
 
+    @property
+    def get_total_price(self) -> float:
+        rc: float = self.total_price / 100
+
+        return round(rc, 2)
+
 
 #Cоздание таблицы OrderItem для хранения состава заказы
 class OrderItem(models.Model):

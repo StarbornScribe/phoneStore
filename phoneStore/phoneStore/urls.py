@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from main.views import add_to_cart, view_cart, remove_item_from_cart, remove_position_from_cart, pay_order
+from main.views import add_to_cart, view_cart, remove_item_from_cart, remove_position_from_cart
 
 
 urlpatterns = [
@@ -37,10 +37,10 @@ urlpatterns = [
     path('public_offer', views.public_offer, name='public_offer'),
     path('confidential_policy', views.confidential_policy, name='confidential_policy'),
     path('payment_details', views.get_payment_details, name='payment_details'),
-    path('create', views.create_order, name='create_order'),
-    path('register_order/', views.register_order, name='register_order'),
-    path('order/', views.pay_order, name='pay_order')
-
+    path('fill_order', views.fill_order, name='fill_order'),
+    path('create_order/', views.create_order, name='create_order'),
+    path('register_order/<int:order_num>/', views.register_order_in_acquiring, name='register_order_in_acquiring')
+    # path('order/', views.pay_order, name='pay_order'),
     # path("checkout/", create_payment, name="checkout"),
     # path("alfa-callback/", alfa_callback, name="alfa_callback"),
     # path('send_form', views.send_form_email, name='send_form'),

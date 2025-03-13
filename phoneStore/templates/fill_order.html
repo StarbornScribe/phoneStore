@@ -26,14 +26,14 @@
                 {% endfor %}
             </div>
             <h2 class="mt-4">Стоимость заказа:</h2>
-            <h2 class="mt-4">{{ total_price }} рублей</h2>
+            <h2 class="mt-4 total-price">{{ total_price }} рублей</h2>
         </div>
 
         <!-- Блок с формой -->
         <div class="col-md-5">
             <div class="order-form p-4 bg-light rounded">
                 <h4 class="mb-4">Ваши данные</h4>
-                <form action="{% url 'register_order' %}" method="POST" id="payment-form">
+                <form action="{% url 'create_order' %}" method="POST" id="payment-form">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="location" class="form-label">Ваше местоположение:</label>
@@ -69,6 +69,7 @@
                     </div>
 
                     <input type="hidden" id="payment-method" name="payment_method" value="">
+                    <input type="hidden" id="total-price" name="total_price" value="{{ total_price }}">
 
                     <button type="submit" class="btn btn-danger w-100">Оформить заказ</button>
                 </form>
@@ -192,10 +193,27 @@
 </style>
 
 <script>
+    const paymentCoefficients = {
+        {% for method, coefficient in payment_rates.items %}
+            "{{ method }}": {{ coefficient }},
+        {% endfor %}
+    };
+
     document.addEventListener('DOMContentLoaded', function () {
         // Получаем все иконки способов оплаты
         const paymentIcons = document.querySelectorAll('.payment-icon');
         const paymentMethodInput = document.getElementById('payment-method');
+        const totalPriceElement = document.querySelector('.total-price');
+        const totalPriceInput = document.getElementById('total-price');
+
+        let baseTotalPrice = parseFloat("{{ total_price }}");
+
+        function updateTotalPrice(method) {
+            const coefficient = paymentCoefficients[method] || 1;
+            const newTotalPrice = baseTotalPrice * coefficient;
+            totalPriceElement.textContent = `${newTotalPrice.toFixed(2)} рублей`;
+            totalPriceInput.value = newTotalPrice.toFixed(2);
+        }
 
         // Добавляем обработчик события для каждой иконки
         paymentIcons.forEach(icon => {
@@ -205,6 +223,9 @@
 
                 // Устанавливаем значение в скрытое поле
                 paymentMethodInput.value = method;
+
+                // Обновляем итоговую цену
+                updateTotalPrice(method);
 
                 // Убираем выделение у всех иконок
                 paymentIcons.forEach(icon => icon.classList.remove('selected'));
@@ -223,5 +244,4 @@
         });
     });
 </script>
-
 {% endblock %}
