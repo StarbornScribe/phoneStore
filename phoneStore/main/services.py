@@ -11,8 +11,12 @@
 - Взаимодействие с внешними API или сторонними сервисами.
 - Логику, которая не относится напрямую к представлениям (views) или моделям (models).
 """
-from typing import Dict, Any, List
+import requests
+from typing import Dict, Any, List, Optional
+from django.http import JsonResponse
 from django.db.models import QuerySet
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 from main.models import Order, OrderItem, OrderStatus, Cart, CartItem, CurrencyCode, PaymentType
 
@@ -21,6 +25,7 @@ def get_order_items(order_object: Order) -> List[OrderItem]:
     order_item_list: List[OrderItem] = [item for item in OrderItem.objects.filter(order_id=order_object)]
 
     return order_item_list
+
 
 def create_order_in_db(cart_object: Cart, order_front_data: Dict[str, str]) -> Order:
     """
@@ -31,9 +36,13 @@ def create_order_in_db(cart_object: Cart, order_front_data: Dict[str, str]) -> O
     :return: Созданный объект заказа
     """
     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart_object)
+
+    if not cart_items.exists():
+        raise ValueError("Корзина пустая")
+
     currency_code: str = CurrencyCode.objects.filter(name='RUB').first()
     if not currency_code:
-        raise ValueError("Валюта 'RUB' не найдена в базе данных.")
+        raise ValueError("Валюта 'RUB' не найдена")
 
     payment_type_object: PaymentType = PaymentType.objects.filter(name=order_front_data['payment_type']).first()
     if not payment_type_object:
@@ -48,7 +57,7 @@ def create_order_in_db(cart_object: Cart, order_front_data: Dict[str, str]) -> O
 
     status: OrderStatus = OrderStatus.objects.filter(name='pending').first()
     if not status:
-        raise ValueError("Статус 'pending' не найден в базе данных.")
+        raise ValueError("Статус 'pending' не найден")
 
     order_object: Order = Order(
         customer_name=order_front_data['name'],
@@ -84,3 +93,63 @@ def create_order_in_db(cart_object: Cart, order_front_data: Dict[str, str]) -> O
     OrderItem.objects.bulk_create(order_items)
 
     return order_object
+
+
+def send_html_email_from_store(
+        order_object: Order,
+        order_items: List[OrderItem],
+        from_email: str,
+        to_email: str,
+        template_name: str
+) -> None:
+    subject: str = f'Айфон-на-Дону. Заказ №{order_object.pk}'
+    email_type: str = 'store' if from_email == to_email else 'customer'
+
+    email_content: Dict[str, Any] = {
+        'order_number': order_object.pk,
+        'order_item_list': order_items,
+        'order_total_price': order_object.get_total_price,
+        'customer_name': order_object.customer_name,
+        'customer_phone': order_object.customer_phone,
+        'customer_email': order_object.customer_email,
+        'is_delivery': 'Да' if order_object.is_delivery is True else 'Нет',
+        'customer_address': order_object.customer_address,
+        'email_type': email_type
+    }
+
+    # Рендеринг HTML-шаблона в строку
+    html_message = render_to_string(template_name, email_content)
+
+    # Создание объекта EmailMessage
+    email = EmailMessage(
+        subject=subject,
+        body=html_message,  # Тело письма в HTML
+        from_email=from_email,  # Отправитель
+        to=[to_email],  # Получатель
+    )
+
+    # Указываем, что письмо содержит HTML
+    email.content_subtype = "html"
+
+    # Отправка письма
+    email.send()
+
+
+def send_request_for_alfabank(json_data: Dict[str, str], end_point: str) -> JsonResponse:
+    alfa_api_url: str = 'https://alfa.rbsuat.com/payment'
+    response_data: Dict[str, str]
+    status: int
+
+    response = requests.post(url=alfa_api_url + end_point, data=json_data)
+
+    if response.status_code == 200:
+        status = response.status_code
+        response_data = response.json()
+    else:
+        status = response.status_code
+        response_data = {
+            'error': "Ошибка при создании платежа",
+            'status_code': status
+        }
+
+    return JsonResponse(response_data, status)

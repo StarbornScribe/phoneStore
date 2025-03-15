@@ -1,14 +1,15 @@
 from django.views.generic import DetailView
 from typing import List, Any, Dict, Optional
+from django.http import JsonResponse
 from django.db.models import QuerySet, CharField
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpResponseNotFound
 
 from phoneStore.settings import EMAIL_HOST_USER
-from .services import get_order_items, create_order_in_db
-from .utils import send_html_email_from_store, send_request_for_alfabank
-from .models import Cart, CartItem, Order, CurrencyCode, OrderItem, OrderStatus, PaymentType
+from .models import Cart, CartItem, Order, OrderItem, OrderStatus
 from .models import ProductInstance, PropertyInstance, ImagesInstance, Stock, PaymentRate
+from .services import get_order_items, create_order_in_db, send_html_email_from_store, send_request_for_alfabank
+
 
 def bootstrap_page_handler(request):
     # print("bootstrap_page_handler called")
@@ -357,9 +358,10 @@ def create_order(request: HttpRequest) -> HttpResponse:
         if order_front_data['payment_type'] == 'card':
             return redirect('register_order_in_acquiring', order_num=order_object.pk)
         elif order_front_data['payment_type'] == 'cash':
-            return redirect(f'/success?payment_type={order_front_data['payment_type']}')
+            return redirect(f'/success?payment_type={order_front_data['payment_type']}&order_num={order_object.pk}')
 
     return render(request, 'success.html')
+
 
 def register_order_in_acquiring(request: HttpRequest, order_num: int) -> HttpResponseRedirect:
     order_object: Order = get_object_or_404(Order, id=order_num)
@@ -369,26 +371,31 @@ def register_order_in_acquiring(request: HttpRequest, order_num: int) -> HttpRes
     json_data: Dict[str, str] = {
         'userName': 'r-iphoneondon-api',
         'password': 'r-iphoneondon*?1',
-        'orderNumber': order_num,
+        # TODO: Не забыть убрать хардкод на 9999
+        'orderNumber': order_num + 9999,
         'amount': order_total_price,
         'currency_code': currency_code,
         # TODO: Здесь некорректный хардкод. На проде упадёт
-        'returnUrl': 'http://127.0.0.1:8000/success?payment_type=card',
+        'returnUrl': f'http://127.0.0.1:8000/success?payment_type=card&order_num={order_num}',
         # Адрес, на который требуется перенаправить пользователя в случае успешной оплаты
         # TODO: Здесь некорректный хардкод. На проде упадёт
         'failUrl': 'http://127.0.0.1:8000/',
-        'description': '',  # Описание заказа в свободной форме.
+        'description': f'Оплата заказа {order_num}',  # Описание заказа в свободной форме.
         'pageView': 'MOBILE',  # DESKTOP, MOBILE
     }
 
-    response_data: Dict[str, str] = send_request_for_alfabank(json_data, end_point='/rest/register.do')
-    alfa_order_id: str = response_data['orderId']
-    alfa_payment_url: str = response_data['formUrl']
+    response_data: JsonResponse = send_request_for_alfabank(json_data, end_point='/rest/register.do')
 
-    order_object.acquiring_order_id = alfa_order_id
-    order_object.save()
+    if response_data.status_code == 200:
+        alfa_order_id: str = response_data['orderId']
+        alfa_payment_url: str = response_data['formUrl']
 
-    return redirect(alfa_payment_url)
+        order_object.acquiring_order_id = alfa_order_id
+        order_object.save()
+
+        return redirect(alfa_payment_url)
+    else:
+        return redirect(HttpResponseNotFound(response_data['error']))
 
 
 def check_order_status(request) -> HttpResponse:
@@ -396,33 +403,47 @@ def check_order_status(request) -> HttpResponse:
 
     if request.method == "GET":
         payment_type: str = request.GET.get('payment_type', '').strip()
+        order_num: int = request.GET.get('order_num', '').strip()
+        order_object: Order = get_object_or_404(Order, pk=order_num)
+        order_items: List[OrderItem] = get_order_items(order_object)
 
         if payment_type == 'cash':
-            pass
+            response_status = True
+
         elif payment_type == 'card':
             acquiring_order_id: str = request.GET.get('orderId', '').strip()
-            order_object: Order = get_object_or_404(Order, acquiring_order_id=acquiring_order_id)
-            order_items: List[OrderItem] = get_order_items(order_object)
-
             # TODO: В дальнейшем можно написать сервисный класс, который будет создержать методы работы с API альфа-банка
             request_data: Dict[str, str] = {
                'userName': 'r-iphoneondon-api',
                'password': 'r-iphoneondon*?1',
                'orderId': acquiring_order_id
             }
-            response_data: Dict[str, str] = send_request_for_alfabank(
+            response_data: JsonResponse = send_request_for_alfabank(
                 request_data,
                 end_point='/rest/getOrderStatusExtended.do'
             )
 
-            if response_data['orderStatus'] == 2:
-                response_status = True
-                order_object.status = OrderStatus.objects.get(name='paid')
-                order_object.save()
+            if response_data.status_code == 200:
+                if response_data['orderStatus'] == 2:
+                    response_status = True
+                    order_object.status = OrderStatus.objects.get(name='paid')
+                    order_object.save()
+            else:
+                return redirect(HttpResponseNotFound(response_data['error']))
 
+        if response_status:
             send_html_email_from_store(
                 order_object=order_object,
                 order_items=order_items,
+                from_email=EMAIL_HOST_USER,
+                # TODO: Не забыть убрать тестовый мейл
+                to_email='denrus86nv@yandex.ru',
+                template_name='order_info_mail.html'
+            )
+            send_html_email_from_store(
+                order_object=order_object,
+                order_items=order_items,
+                from_email=EMAIL_HOST_USER,
                 to_email=EMAIL_HOST_USER,
                 template_name='order_info_mail.html'
             )
@@ -431,29 +452,7 @@ def check_order_status(request) -> HttpResponse:
         'response_status': response_status
     }
 
-    # TODO: Нужно сообщать клиенту его номер заказа и отправлять пиьсмо на почту
-    # Вернем сообщение об успешной отправке
     return render(request, 'success.html', context=context)
-
-# # Функция для оплаты товаров из корзины пользователя
-# def pay_order(request: HttpRequest) -> HttpResponse:
-#     # Получаем корзину пользователя из сессии
-#     cart: Cart = get_user_cart(request)
-#     cart_items: QuerySet[CartItem] = CartItem.objects.filter(cart=cart)
-#
-#     cart_total_price: float = sum(item.get_total_price for item in cart_items)
-#
-#     # Получаем все ставки для соответсвующих объектов из модели PaymentType
-#     payment_rates = PaymentRate.objects.select_related('payment_type').all()
-#     payment_name: List[str] = [rate.payment_type.name for rate in payment_rates]
-#     rate = [rate.rate for rate in payment_rates]
-#
-#     context: Dict[str, Any] = {
-#         'cart_items': cart_items,
-#         'payment_rates': payment_rates
-#     }
-#     return render(request, 'order.html', context)
-
 # -------------------
 
 # # Функция для создания платежа в Альфа-Кассе

@@ -3,6 +3,11 @@
 <div class="checkout-container" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
     <!-- Блок с товаром -->
     <div class="container py-5">
+        {% if email_type == 'customer' %}
+            <p>Добрый день, {{ customer_name }}!</p>
+            <p>Мы приняли ваш заказ. В скором времени с вами свяжется консультант.</p>
+            <p>Спасибо, что выбрали Айфон-на-Дону!</p>
+        {% endif %}
         <h2 style="text-align: center; color: #4CAF50;">Заказ № {{ order_number }}</h2>
         <div class="list-group">
             {% for item in order_item_list %}
@@ -19,7 +24,7 @@
         </div>
         <!-- Информация о клиенте -->
         <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
-            <p style="margin: 0;"><strong>Клиент:</strong> {{ customer_name }}</p>
+            <p style="margin: 0;"><strong>Покупатель:</strong> {{ customer_name }}</p>
             <p style="margin: 0;"><strong>Телефон:</strong> {{ customer_phone }}</p>
             <p style="margin: 0;"><strong>Email:</strong> {{ customer_email }}</p>
             <p style="margin: 0;"><strong>Доставка:</strong> {{ is_delivery }}</p>

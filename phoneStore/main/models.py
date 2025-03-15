@@ -163,6 +163,7 @@ class CartItem(models.Model):
 
         return rc
 
+
 # --------------------
 # Модели для оплаты
 # --------------------
@@ -175,12 +176,14 @@ class CurrencyCode(models.Model):
     def __str__(self):
         return f"Currency {self.id} - {self.name}"
 
+
 # Модель по типам оплаты
 class PaymentType(models.Model):
     name = models.CharField(max_length=50, null=False) # CБП/карта/наличка
 
     def __str__(self):
         return f"{self.name}"
+
 
 # Таблица ставок на итоговую цену заказа
 class PaymentRate(models.Model):
@@ -212,7 +215,6 @@ class TimeStampedModel(models.Model):
 
 # Таблица для хранения заказов пользователя
 class Order(TimeStampedModel):
-    "Заказ после успешной оплаты"
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     customer_name = models.CharField(max_length=50, null=False)
     customer_phone = models.CharField(max_length=50, null=False)
@@ -226,6 +228,7 @@ class Order(TimeStampedModel):
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=False)
     status = models.ForeignKey(OrderStatus, null=False, on_delete=models.CASCADE)   # Здесь возможно три варианта: # pending, paid, canceled
     acquiring_order_id = models.CharField(max_length=36) # Номер заказа в платёжной системе. Уникален в пределах системы.
+
     def __str__(self):
         return f"Заказ {self.id} | Статус: {self.status} | Итоговая сумма: {self.total_price} | Создан: {self.created_at} | Обновлен: {self.updated_at}"
 
@@ -236,7 +239,6 @@ class Order(TimeStampedModel):
         return round(rc, 2)
 
 
-#Cоздание таблицы OrderItem для хранения состава заказы
 class OrderItem(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=False)
     stock_data = models.JSONField(verbose_name="stock data", null=False)
