@@ -1,0 +1,88 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        .container { max-width: 900px; margin: auto; }
+        .section { margin-bottom: 20px; padding: 20px; border-radius: 8px; background: #f8f9fa; border: 1px solid #dee2e6; }
+        .payment-methods { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .payment-method { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; margin-left: 20px; margin-right: 20px;}
+        .payment-method img { width: 150px; height: auto; display: block; }
+        .section img { max-width: 100%; display: block; margin: 10px auto; }
+    </style>
+    <div class="container mt-4 p-2">
+
+    <h2><b>Оплата и доставка</b></h2>
+    <h3><b>Оплата</b></h3>
+    <p><b>Оплатить Заказ можно одним из способов:</b></p>
+    <ul>
+        <li>- в рублях наличными денежными средствами при получении Заказа;</li>
+        <li>- безналичным способом оплаты Товара при оформлении Заказа или в момент передачи Товара.</li>
+    </ul>
+    <p><b>Резервирование Товара доступно только после полной оплаты Товара.</b></p>
+<br>
+<h3><b>Способы оплаты</b></h3>
+<div class="payment-methods">
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/cash_pay.png' %}" alt="Оплата наличными">
+        <p><b>Наличными при получении</b></p>
+    </div>
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/sbp.jpeg' %}" alt="СБП">
+        <p><b>Оплата через СБП</b></p>
+    </div>
+</div>
+<br>
+<h3><b>Доставка</b></h3>
+<p>Интернет-магазин выполняет доставку любого товара собственной Службой доставки.</p>
+<br>
+<h4><b>Стоимость доставки</b></h4>
+
+<p>Доставка по Ростову-на-Дону курьером бесплатная, при заказе от 5000 рублей.</p>
+<br>
+<h4><b>Время доставки</b></h4>
+<p>Время доставки согласовывается с менеджером , который обязательно свяжется с Вами сразу после того,
+как Вы оформите свой заказ. Пожалуйста, внимательно проверяйте Ваши персональные данные при регистрации и оформлении заказа.
+Время осуществления доставки зависит от времени оформления заказа и наличия товара на складе. Вы также можете указать любой
+удобный временной промежуток доставки, и покупка будет доставлена в это время, после согласования с менеджером.</p>
+<br>
+
+<h4><b>Место доставки</b></h4>
+
+<p>Доставка осуществляется по адресу, указанному при оформлении заказа.
+Если необходимо доставить товар по иному адресу, необходимо сообщить адрес менеджеру Службы доставки,
+который свяжется с Вами непосредственно после оформления заказа на сайте.</p>
+<br>
+
+<h4><b>Самовывоз Товара</b></h4>
+
+<p>Самовывоз Товара возможен из Розничного магазина Продавца.
+Самовывоз возможен до 21:00 по местному времени в день, в который был сделан Заказ.
+В иных случаях самовывоз возможен по согласованию с Менеджером по телефону.</p>
+<br>
+<h3><b>Способы доставки</b></h3>
+<br>
+<div class="payment-methods">
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/pickup.png' %}" alt="Оплата наличными">
+        <p><b>Самовывоз</b></p>
+    </div>
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/currier.png' %}" alt="СБП">
+        <p><b>Курьером магазина</b></p>
+    </div>
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/sdek.png' %}" alt="СБП">
+        <p><b>СДЭК</b></p>
+    </div>
+    <div class="payment-method">
+        <img src="{% static 'assets/images/icons/russian_post.png' %}" alt="СБП">
+        <p><b>Почта России</b></p>
+    </div>
+</div>
+</div>
+{% endblock %}

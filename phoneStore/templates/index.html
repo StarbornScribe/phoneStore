@@ -67,28 +67,34 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="single-banner nth-child-1">
-                    <img src="{% static 'assets/images/banner/watches_banner_new.png' %}" alt="">
-                    <div class="banner-content nth-child-1">
-                        <h3 class="title">Watch<br>
-                        </h3>
-                        <a href="{% url 'phones_catalog' product_type='watches' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-                    </div>
+                    <a href="{% url 'phones_catalog' product_type='phones' %}">
+                        <img src="{% static 'assets/images/banner/phones_banner_new.png' %}" alt="">
+                            <div class="banner-content nth-child-1">
+                                <h3 class="title">iPhone<br>
+                                </h3>
+                                <a href="{% url 'phones_catalog' product_type='phones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                            </div>
+                        </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="single-banner nth-child-2 mb-30px mb-lm-30px mt-lm-30px ">
-                    <img src="{% static 'assets/images/banner/head-phones-banner.png' %}" style="opacity:0.5;" alt="">
-                    <div class="banner-content nth-child-2">
-                        <h3 class="title">Airpods</h3>
-                        <a href="{% url 'phones_catalog' product_type='headphones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-                    </div>
+                    <a href="{% url 'phones_catalog' product_type='headphones' %}">
+                        <img src="{% static 'assets/images/banner/head-phones-banner.png' %}" alt="">
+                        <div class="banner-content nth-child-2">
+                            <h3 class="title">Airpods</h3>
+                            <a href="{% url 'phones_catalog' product_type='headphones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </a>
                 </div>
                 <div class="single-banner nth-child-2">
-                    <img src="{% static 'assets/images/banner/phones-banner.png' %}" style="opacity:0.7" alt="">
-                    <div class="banner-content nth-child-3">
-                        <h3 class="title">iPhone</h3>
-                        <a href="{% url 'phones_catalog' 'phones' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-                    </div>
+                    <a href="{% url 'phones_catalog' 'watches' %}">
+                        <img src="{% static 'assets/images/banner/watches-banner.png' %}" alt="">
+                        <div class="banner-content nth-child-3">
+                            <h3 class="title">Watch</h3>
+                            <a href="{% url 'phones_catalog' product_type='watches' %}" class="shop-link"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

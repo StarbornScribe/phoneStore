@@ -34,7 +34,7 @@
                     <h1>{{ product.name }}</h1>
                     <div class="pricing-meta">
                         <ul class="d-flex">
-                            <li class="new-price">{{stock_data.price}} ₽</li>
+                            <li class="new-price">{{ stock_data.price }} ₽</li>
                         </ul>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             <table class="product-anotherinfo-table">
                                 {% for property in stock_data.properties%}
                                 <tr>
-                                    <td><span>{{property.name}}:</span></td>
+                                    <td><span>{{ property.name }}:</span></td>
                                     <td class="product-anotherinfo-table-value">{{property.value}}</td>
                                 </tr>
                                 {% endfor %}
@@ -59,6 +59,11 @@
                          <div>
                             <a href="{% url 'create_order' %}"><button class="button-post">Заказать</button></a>
                          </div>
+<!--                        <div>-->
+<!--                            <a href="{% url 'add_to_cart' stock_id %}"><button class="button-post">Добавить в корзину и перейти к оплате</button></a>-->
+<!--                        </div>-->
+
+
                 <!-- product details description area end -->
                 <!--========================================-->
                 </div>

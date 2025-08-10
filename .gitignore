@@ -1,7 +1,6 @@
 # Byte-compeled / optimized / DLL files
 __pycache__/
 
-phoneStore/phoneStore/__init__.py
 phoneStore/main/migrations/__init__.py
 db.sqlite3
 phoneStore/main/migrations/
